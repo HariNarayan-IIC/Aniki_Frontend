@@ -13,7 +13,7 @@ let router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Roadmap_Section/>
+        element: <><Roadmap_Section/></>
       }
     ]
   }
