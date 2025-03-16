@@ -11,7 +11,7 @@ function App() {
 
   return (
     <>
-    <Roadmap_Section/>
+    {/* <Roadmap_Section/> */}
     <div>
       <PromotionSection /> {/* Use the component */}
     </div>
