@@ -4,13 +4,15 @@ import Resources from './components/resourcessection'
 import PromotionSection from "./components/promotionsection";
 import CommunitySection from "./components/communitysection";
 import Footer from './components/footersection'
+import Roadmap_Section from './components/Roadmap_Section/Roadmap_Section'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
+    <Roadmap_Section/>
+    <div>
       <PromotionSection /> {/* Use the component */}
     </div>
     <div>
