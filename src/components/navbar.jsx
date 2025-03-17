@@ -1,37 +1,51 @@
 import React from "react";
 import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 
-export default function Navbar() {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
+    <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+      {/* Logo */}
       <div className="text-2xl font-bold italic">Aniki</div>
-      <div className="flex space-x-6 text-black">
-        <a href="#" className="hover:text-gray-600">Home Page</a>
-        <a href="#" className="hover:text-gray-600">About Us</a>
-        <a href="#" className="hover:text-gray-600">Contact Us</a>
-        <div className="relative">
-          <button 
-            className="flex items-center space-x-1 hover:text-gray-600"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <span>Resources</span>
-            <FaChevronDown className="text-sm" />
-          </button>
-          {isOpen && (
-            <div className="absolute mt-2 w-40 bg-white shadow-md rounded-md">
-              <a href="#" className="block px-4 py-2 hover:bg-gray-100">Resource 1</a>
-              <a href="#" className="block px-4 py-2 hover:bg-gray-100">Resource 2</a>
-            </div>
-          )}
+
+      {/* Desktop Menu */}
+      <ul className="hidden md:flex space-x-6 text-lg">
+        <li className="hover:text-gray-600 cursor-pointer">Home Page</li>
+        <li className="hover:text-gray-600 cursor-pointer">About Us</li>
+        <li className="hover:text-gray-600 cursor-pointer">Contact Us</li>
+        <li className="hover:text-gray-600 cursor-pointer">Resources</li>
+      </ul>
+
+      {/* Buttons */}
+      <div className="hidden md:flex space-x-4">
+        <button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button>
+        <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button>
+      </div>
+
+      {/* Mobile Menu Toggle Button */}
+      <div className="md:hidden text-2xl cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? <FaTimes /> : <FaBars />}
+      </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="absolute top-16 left-0 w-full bg-white shadow-md py-4 flex flex-col items-center md:hidden">
+          <ul className="space-y-4 text-lg">
+            <li className="hover:text-gray-600 cursor-pointer">Home Page</li>
+            <li className="hover:text-gray-600 cursor-pointer">About Us</li>
+            <li className="hover:text-gray-600 cursor-pointer">Contact Us</li>
+            <li className="hover:text-gray-600 cursor-pointer">Resources</li>
+          </ul>
+          <div className="mt-4 space-y-2">
+            <button className="px-4 py-2 border rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Signup</button>
+            <button className="px-4 py-2 bg-green-500 text-white rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Login</button>
+          </div>
         </div>
-      </div>
-      <div className="flex space-x-4">
-        <button className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Signup</button>
-        <button className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Login</button>
-      </div>
+      )}
     </nav>
   );
-}
+};
+
+export default Navbar;
