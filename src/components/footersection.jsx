@@ -15,10 +15,10 @@ const socialIcons = {
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white p-6 md:p-12 bottom-0 w-full">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 items-start">
-        <div className="text-left md:col-span-1 md:pr-16 md:self-start md:justify-self-start md:pl-0 md:ml-0 md:mr-auto">
-          <h2 className="text-2xl font-bold text-white">Logo</h2>
+    <footer className="bg-black text-white p-6 md:p-12 fixed bottom-0 w-full">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 items-start">
+        <div className="text-left md:col-span-1 md:self-start">
+          <div className="text-2xl font-bold italic">Aniki</div>
           <p className="mt-2 text-gray-400">
             Join our newsletter for the latest updates on features, resources, and releases.
           </p>
@@ -51,7 +51,7 @@ const Footer = () => {
             ))}
           </ul>
         </div>
-        <div className="text-center md:col-span-1 md:self-start md:justify-self-start">
+        <div className="text-center md:col-span-1 md:self-start">
           <h3 className="font-semibold text-white">Follow Us</h3>
           <ul className="mt-2 space-y-2">
             {Object.keys(socialIcons).map((social) => (
@@ -65,11 +65,8 @@ const Footer = () => {
         </div>
       </div>
         
-        
-      
-
       <div className="border-t border-gray-700 mt-6 pt-4 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
-        <p className="text-left text-gray-300 md:self-start">© 2024 Relume. All rights reserved.</p>
+        <p className="text-left text-gray-300 md:self-start">© 2025 Aniki. All rights reserved.</p>
         <div className="flex justify-center gap-6 mt-2 md:mt-0 text-gray-200">
           {["Privacy Policy", "Terms of Service", "Cookies Settings"].map((item) => (
             <a key={item} href="#" className="hover:text-white transition-colors underline font-bold">
