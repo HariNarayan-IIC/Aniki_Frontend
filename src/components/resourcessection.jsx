@@ -2,6 +2,7 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import React from "react";
 import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const articles = [
   {
@@ -36,37 +37,39 @@ const articles = [
 export default function LearningResources() {
   const words = "Latest Learning Resources".split(" ");
 
+  // Intersection Observer Hook
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Ensures animation runs only once
+    threshold: 0.3, // Trigger animation when 30% of the component is visible
+  });
+
   return (
-    <div className="bg-[#f8fae5] min-h-screen py-12 px-4 sm:px-6 lg:px-8 overflow-visible">
+    <div ref={ref} className="bg-[#f8fae5] min-h-screen py-12 px-4 sm:px-6 lg:px-8 overflow-visible">
       <div className="max-w-5xl mx-auto text-center">
-        <motion.h2
-          className="text-3xl font-semibold text-gray-900 flex justify-center space-x-2"
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        {/* Animated Heading */}
+        <h2 className="text-3xl font-semibold text-gray-900 flex justify-center space-x-2">
           {words.map((word, index) => (
             <motion.span
               key={index}
-              initial={{ opacity: 0, y: -10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: -20 }} // Start hidden, move up
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }} // Animate when inView
               transition={{ delay: index * 0.2, duration: 0.5 }}
               className="inline-block"
             >
               {word}
             </motion.span>
           ))}
-        </motion.h2>
+        </h2>
         <p className="text-gray-600 mt-2">Explore articles to enhance your IT skills.</p>
       </div>
-      <div className="mt-8 flex gap-6 max-w-5xl mx-auto overflow-visible relative">
+
+      {/* Article Cards (No Fade-In, Only Hover Effect) */}
+      <div className="mt-8 grid gap-6 max-w-5xl mx-auto overflow-visible relative grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {articles.map((article, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.05 }}
-            className="transform transition duration-300 flex-shrink-0 w-full sm:w-[50%] lg:w-[40%] xl:w-[30%] relative"
+            whileHover={{ scale: 1.05 }} // Only hover effect, no fade-in
+            className="transform transition duration-300 flex-shrink-0 relative w-full"
           >
             <Card className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col h-[30rem]">
               <div className="h-56 w-full overflow-hidden">
@@ -90,6 +93,8 @@ export default function LearningResources() {
           </motion.div>
         ))}
       </div>
+
+      {/* View All Button */}
       <div className="flex justify-center mt-6">
         <Button className="bg-gray-900 text-white px-6 py-2 rounded-lg transition-transform transform hover:scale-105">
           View all
