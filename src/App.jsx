@@ -7,6 +7,7 @@ import Footer from './components/footersection'
 import Roadmap_Section from './components/Roadmap_Section/Roadmap_Section'
 import Navbar from './components/navbar';
 import HeroSection from './components/heroSection';
+import FeaturesSection from './components/featuresSection';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -16,7 +17,7 @@ function App() {
     <Navbar/>
     <HeroSection/>
     <Roadmap_Section/>
-    
+    <FeaturesSection/>
     <div>
       <PromotionSection /> {/* Use the component */}
     </div>
