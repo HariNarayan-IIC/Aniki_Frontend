@@ -6,7 +6,7 @@ const HeroSection = () => {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('src/assets/HeroSectionBackground.jpg')" }}
+        style={{ backgroundImage: "url('/HeroSectionBackground.jpg')" }}
       />
 
       {/* Overlay */}
