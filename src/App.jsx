@@ -6,6 +6,7 @@ import CommunitySection from "./components/communitysection";
 import Footer from './components/footersection'
 import Roadmap_Section from './components/Roadmap_Section/Roadmap_Section'
 import Navbar from './components/navbar';
+import HeroSection from './components/heroSection';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +14,9 @@ function App() {
   return (
     <>
     <Navbar/>
-    {/* <Roadmap_Section/> */}
+    <HeroSection/>
+    <Roadmap_Section/>
+    
     <div>
       <PromotionSection /> {/* Use the component */}
     </div>
