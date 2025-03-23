@@ -8,28 +8,17 @@ import Roadmap_Section from './components/Roadmap_Section/Roadmap_Section'
 import Navbar from './components/navbar';
 import HeroSection from './components/heroSection';
 import FeaturesSection from './components/featuresSection';
-
+import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
+import signup from "./SignupPage";
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
     <Navbar/>
-    <HeroSection/>
-    <Roadmap_Section/>
-    <FeaturesSection/>
-    <div>
-      <PromotionSection /> {/* Use the component */}
-    </div>
-    <div>
-      <CommunitySection /> {/* Use the component */}
-    </div>
-    <div>
-      <Resources/>
-    </div>
-    <div>
-      <Footer/>
-    </div>
+    <Outlet/>
+    <Footer/>
+    
     </>
     
   )
