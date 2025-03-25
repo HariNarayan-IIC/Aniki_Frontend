@@ -16,21 +16,12 @@ const socialIcons = {
 const Footer = () => {
   return (
     <footer className="bg-black text-white p-6 md:p-12 bottom-0 w-full">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 items-start">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 items-start text-center">
         <div className="text-left md:col-span-1 md:self-start">
           <div className="text-2xl font-bold italic">Aniki</div>
-          <p className="mt-2 text-gray-400">
-            Join our newsletter for the latest updates on features, resources, and releases.
-          </p>
-          <div className="flex mt-4">
-            <input type="email" placeholder="Your email here" className="p-2 flex-1 rounded-l bg-gray-800 text-white border border-gray-700 focus:outline-none" />
-            <button className="p-2 px-4 bg-gray-700 hover:bg-gray-600 transform hover:scale-105 transition-all rounded-r">
-              Subscribe
-            </button>
-          </div>
         </div>
         
-        <div className="text-center md:col-span-1">
+        <div className="md:col-span-1 flex flex-col items-center">
           <h3 className="font-semibold text-white">Quick Links</h3>
           <ul className="mt-2">
             {["Home Page", "About Us", "Contact Us", "Link Four", "Link Five"].map((link) => (
@@ -41,21 +32,11 @@ const Footer = () => {
           </ul>
         </div>
         
-        <div className="text-center md:col-span-1">
-          <h3 className="font-semibold text-white">Column Two</h3>
-          <ul className="mt-2">
-            {["Link Six", "Link Seven", "Link Eight", "Link Nine", "Link Ten"].map((link) => (
-              <li key={link} className="mt-2">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">{link}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="text-center md:col-span-1 md:self-start">
+        <div className="md:col-span-1 flex flex-col items-center">
           <h3 className="font-semibold text-white">Follow Us</h3>
           <ul className="mt-2 space-y-2">
             {Object.keys(socialIcons).map((social) => (
-              <li key={social} className="flex items-center gap-3 justify-center">
+              <li key={social} className="flex items-center gap-3">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors flex items-center gap-3">
                   {socialIcons[social]} <span className="inline-block">{social}</span>
                 </a>

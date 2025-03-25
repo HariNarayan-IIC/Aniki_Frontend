@@ -53,7 +53,7 @@ const AuthCard = () => {
             className="mt-4 px-4 py-2 bg-[#F5F3E4] text-[#8B5E3C] rounded-lg shadow hover:bg-opacity-90"
             onClick={() => setIsSignUp(false)}
           >
-            Sign In
+            Sign Up
           </button>
         </div>
       </div>
