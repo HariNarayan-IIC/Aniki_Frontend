@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { Link } from "react-router";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +21,7 @@ const Navbar = () => {
 
       {/* Buttons */}
       <div className="hidden md:flex space-x-4">
-        <button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button>
+        <Link to="signup"><button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button></Link>
         <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button>
       </div>
 
@@ -39,7 +40,7 @@ const Navbar = () => {
             <li className="hover:text-gray-600 cursor-pointer">Resources</li>
           </ul>
           <div className="mt-4 space-y-2">
-            <button className="px-4 py-2 border rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Signup</button>
+            <Link to="signup"><button className="px-4 py-2 border rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Signup</button></Link>
             <button className="px-4 py-2 bg-green-500 text-white rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Login</button>
           </div>
         </div>
