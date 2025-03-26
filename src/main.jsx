@@ -5,6 +5,8 @@ import './index.css'
 import App from './App.jsx'
 import SignupPage from './SignupPage.jsx';
 import LandingPage from './LandingPage.jsx';
+import DashboardPage from './DashboardPage.jsx';
+
 
 let router = createBrowserRouter([
   {
@@ -18,6 +20,10 @@ let router = createBrowserRouter([
       {
         path: "",
         element: <LandingPage/>
+      },
+      {
+        path: "dashboard",
+        element: <DashboardPage/>
       }
     ]
   }
