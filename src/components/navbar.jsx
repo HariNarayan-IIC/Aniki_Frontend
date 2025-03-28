@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { MdMenu, MdClose, MdHome, MdRoute, MdForum, MdBook} from "react-icons/md";
 import { Link } from "react-router";
 
 const Navbar = () => {
