@@ -5,6 +5,7 @@ import App from './App.jsx'
 import SignupPage from './SignupPage.jsx';
 import LandingPage from './LandingPage.jsx';
 import RoadmapsPage from './RoadmapsPage.jsx';
+import PageNotFound from './404Page.jsx';
 
 let router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ let router = createBrowserRouter([
       {
         path: "/roadmaps",
         element: <RoadmapsPage/>
+      },
+      {
+        path: "*",
+        element: <PageNotFound/>
       }
     ]
   }
