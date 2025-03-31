@@ -2,11 +2,11 @@ import React from "react";
 
 const HeroSection = () => {
   return (
-    <section className="relative w-full h-screen flex items-center justify-center text-white">
+    <section className="relative w-full h-[calc(100vh-144px)] md:h-[calc(100vh-64px)] flex items-center justify-center text-white" style={{height: "calc(100vh-144px)"}}>
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/HeroSectionBackground.jpg')" }}
+        style={{ backgroundImage: "url('/images/HeroSectionBackground.jpg')" }}
       />
 
       {/* Overlay */}
