@@ -47,9 +47,9 @@ const AuthCard = () => {
             {/* Left Card */}
             <div className={`w-1/2 p-10 bg-white rounded-lg shadow-lg transition-all duration-500 ease-in-out transform hover:scale-105`}>
               {!isSignIn ? (
-                <>
-                  <h2 className="text-2xl font-bold text-center text-[#8B5E3C]">Hello Wakai</h2>
-                  <p className="mt-2 text-center">Start your journey</p>
+                <>g
+                  <h2 className="text-2xl font-bold text-center text-[#8B5E3C]">Welcome Back!</h2>
+                  <p className="mt-2 text-center">Start your session from where you left it</p>
                   <button
                     className="w-full p-2 mt-4 text-white bg-[#8B5E3C] rounded-lg hover:bg-opacity-80"
                     onClick={() => setIsSignIn(true)}
@@ -79,8 +79,8 @@ const AuthCard = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="text-2xl font-bold">Welcome Back</h2>
-                  <p className="mt-2 text-center">Continue where you left off OR</p>
+                  <h2 className="text-2xl font-bold">Hello, wakai!</h2>
+                  <p className="mt-2 text-center">Enter your details and start your learning journey with us</p>
                   <button
                     className="mt-4 px-4 py-2 bg-[#F5F3E4] text-[#8B5E3C] rounded-lg shadow hover:bg-opacity-90"
                     onClick={() => setIsSignIn(false)}
