@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { MdMenu, MdClose, MdHome, MdRoute, MdForum, MdBook} from "react-icons/md";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,14 +11,16 @@ const Navbar = () => {
     <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
       <div className="flex gap-4">
       {/* Logo */}
-      <div className="text-2xl font-bold italic">Aniki</div>
+      <div className="text-2xl font-bold italic">
+        <NavLink to={"/"}>Aniki</NavLink>
+      </div>
 
       {/* Desktop Menu */}
       <ul className="hidden md:flex space-x-6 text-lg">
-        <li className="hover:text-gray-600 cursor-pointer">Home Page</li>
-        <li className="hover:text-gray-600 cursor-pointer">Roadmaps</li>
-        <li className="hover:text-gray-600 cursor-pointer">Communities</li>
-        <li className="hover:text-gray-600 cursor-pointer">Resources</li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/"} className={({isActive}) => isActive?"underline":""}>Home Page</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/roadmaps"}>Roadmaps</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/communities"}>Communities</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/resources"}>Resources</NavLink></li>
       </ul>
       </div>
 
