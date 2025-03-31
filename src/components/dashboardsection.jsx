@@ -1,85 +1,125 @@
-import React, { useState } from "react";
-import { FaBars } from "react-icons/fa";
-import { Card } from "./ui/card";
+import React, { useState, useEffect } from 'react';
+import { FaTachometerAlt, FaRoute, FaComments, FaChartLine, FaBook, FaCalendarAlt } from 'react-icons/fa';
+
+const items = [
+  { id: 'dashboard', name: 'Dashboard', icon: <FaTachometerAlt />, content: 'Welcome to the Dashboard!' },
+  { id: 'roadmaps', name: 'Roadmaps', icon: <FaRoute />, content: 'Explore your learning roadmap.' },
+  { id: 'chatrooms', name: 'Chatrooms', icon: <FaComments />, content: 'Join the conversation in chatrooms.' },
+  { id: 'progress', name: 'Progress', icon: <FaChartLine />, content: 'Track your progress here.' },
+  { id: 'resources', name: 'Resources', icon: <FaBook />, content: 'Access your learning resources.' },
+  { id: 'schedule', name: 'Schedule', icon: <FaCalendarAlt />, content: 'View your schedule and deadlines.' },
+];
+
+const cardData = {
+  dashboard: [
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis'],
+    ['Overview', 'Summary of key metrics'],
+    ['Performance', 'Track your daily performance'],
+    ['Analytics', 'Detailed data analysis']
+  ],
+  roadmaps: [
+    ['Frontend', 'Learn HTML, CSS, and JS'],
+    ['Backend', 'Master Node.js and APIs'],
+    ['DevOps', 'Understand CI/CD pipelines'],
+  ],
+  chatrooms: [
+    ['General', 'Open discussion forum'],
+    ['Tech Support', 'Get help with your queries'],
+    ['Off-Topic', 'Casual conversations'],
+  ],
+  progress: [
+    ['Daily Goals', 'Track daily achievements'],
+    ['Weekly Review', 'Analyze weekly results'],
+    ['Milestones', 'Set and complete milestones'],
+  ],
+  resources: [
+    ['E-books', 'Explore recommended e-books'],
+    ['Tutorials', 'Hands-on video tutorials'],
+    ['Cheat Sheets', 'Quick reference guides'],
+  ],
+  schedule: [
+    ['Upcoming Events', 'Check out upcoming activities'],
+    ['Deadlines', 'Manage your task deadlines'],
+    ['Reminders', 'Never miss an important date'],
+  ],
+};
 
 const Dashboardsection = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selected, setSelected] = useState('dashboard');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const selectedItem = items.find((item) => item.id === selected);
+  const selectedCards = cardData[selected] || [];
 
   return (
-    <div className="flex h-screen bg-lime-100">
-      {/* Sidebar */}
+    <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} min-h-[calc(100vh-74px)] bg-[#f3ffd8]`}> 
       <div
         className={`${
-          sidebarOpen ? "w-64" : "w-16"
-        } bg-white shadow-lg h-full duration-300`}
+          isMobile ? 'flex justify-around w-full border-b bg-white border-gray-300' : 'w-64 border-r border-gray-300 flex flex-col p-4 bg-white min-h-[calc(100vh-74px)] overflow-y-auto'
+        }`}
       >
-        <div className="p-4">
-          <FaBars
-            onClick={toggleSidebar}
-            className="cursor-pointer text-xl mb-4"
-          />
-          {sidebarOpen && <h2 className="text-lg font-semibold">Aniki</h2>}
-        </div>
-        <div className="mt-4 space-y-4">
-          {sidebarOpen ? (
-            <ul className="space-y-2">
-              <li className="p-2 hover:bg-gray-100 rounded">My Courses</li>
-              <li className="p-2 hover:bg-gray-100 rounded">Roadmaps</li>
-              <li className="p-2 hover:bg-gray-100 rounded">Chatrooms</li>
-              <li className="p-2 hover:bg-gray-100 rounded">Progress</li>
-              <li className="p-2 hover:bg-gray-100 rounded">Resources</li>
-              <li className="p-2 hover:bg-gray-100 rounded">Schedule</li>
-            </ul>
-          ) : (
-            <div className="space-y-4">
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-            </div>
-          )}
-        </div>
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className={`flex items-center cursor-pointer p-3 mb-2 rounded-lg transition ${
+              selected === item.id ? 'bg-[#a7e9af] font-bold' : 'hover:bg-gray-200'
+            } ${isMobile ? 'justify-center' : ''}`}
+            onClick={() => setSelected(item.id)}
+          >
+            <span className="text-lg mr-2">{item.icon}</span>
+            {!isMobile && <span>{item.name}</span>}
+          </div>
+        ))}
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        <h1 className="text-3xl font-bold mb-6">Welcome back, User</h1>
-        <p className="mb-8">Continue your learning journey</p>
+      <div className="flex-1 p-6 min-h-[calc(100vh-74px)] overflow-hidden">
+        <h2 className="text-2xl font-bold mb-4">{selectedItem?.name}</h2>
+        <p className="text-gray-600 mb-6">{selectedItem?.content}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {/* Course Cards */}
-          <Card className="p-6 bg-green-100">
-            <h3 className="font-bold">Introduction to Machine Learning</h3>
-            <p className="text-sm mt-2">Learn the fundamentals of Data Science</p>
-            <div className="mt-4">
-              <p className="text-sm font-semibold">Progress: 65%</p>
-              <div className="bg-gray-300 h-2 rounded-full">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: "65%" }}></div>
+        <div className="h-[calc(100vh-244px)] overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {selectedCards.map(([title, description], index) => (
+              <div
+                className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition"
+                key={index}
+              >
+                <h3 className="text-lg font-bold text-black mb-2 bg-white p-2 rounded-md">{title}</h3>
+                <p className="text-white bg-[#1db954] p-2 rounded-md">{description}</p>
               </div>
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-green-100">
-            <h3 className="font-bold">Advanced Web Development</h3>
-            <p className="text-sm mt-2">Master modern web development techniques</p>
-            <div className="mt-4">
-              <p className="text-sm font-semibold">Progress: 42%</p>
-              <div className="bg-gray-300 h-2 rounded-full">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: "42%" }}></div>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-black text-white">
-            <h3 className="font-bold">Data Science Chatroom</h3>
-            <p className="text-sm">28 participants</p>
-            <p className="text-sm mt-4">Jun 7, 02:23 PM</p>
-          </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
