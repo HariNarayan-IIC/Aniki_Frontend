@@ -32,7 +32,7 @@ const AuthCard = () => {
                 <p className="mt-2 text-[#8B5E3C] font-semibold">OR</p>
                 <p
                   className="mt-2 text-[#8B5E3C] font-semibold cursor-pointer"
-                  onClick={() => setIsSignIn(true)}
+                  onClick={() => navigate("/login")}
                 >
                   Sign In
                 </p>
