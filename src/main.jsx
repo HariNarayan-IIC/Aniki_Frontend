@@ -17,6 +17,10 @@ let router = createBrowserRouter([
         element: <SignupPage/>
       },
       {
+        path: "login",
+        element: <SignupPage/>
+      },
+      {
         path: "",
         element: <LandingPage/>
       },

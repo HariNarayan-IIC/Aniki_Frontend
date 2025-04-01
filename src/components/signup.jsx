@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 const AuthCard = () => {
-  const [isSignIn, setIsSignIn] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isSignIn, setIsSignIn] = useState(location.pathname === "/login");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
+    setIsSignIn(location.pathname === "/login")
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F5F3E4] p-4">
@@ -47,12 +51,13 @@ const AuthCard = () => {
             {/* Left Card */}
             <div className={`w-1/2 p-10 bg-white rounded-lg shadow-lg transition-all duration-500 ease-in-out transform hover:scale-105`}>
               {!isSignIn ? (
-                <>g
-                  <h2 className="text-2xl font-bold text-center text-[#8B5E3C]">Welcome Back!</h2>
-                  <p className="mt-2 text-center">Start your session from where you left it</p>
+                <>
+                  <h2 className="text-2xl font-bold text-center text-[#8B5E3C]">Hello, wakai!</h2>
+                  <p className="mt-2 text-center">Enter your details and start your learning journey with us</p><br/>
+                  <p className="text-center">OR</p>
                   <button
                     className="w-full p-2 mt-4 text-white bg-[#8B5E3C] rounded-lg hover:bg-opacity-80"
-                    onClick={() => setIsSignIn(true)}
+                    onClick={() => navigate("/login")}
                   >
                     Sign In
                   </button>
@@ -79,11 +84,12 @@ const AuthCard = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="text-2xl font-bold">Hello, wakai!</h2>
-                  <p className="mt-2 text-center">Enter your details and start your learning journey with us</p>
+                  <h2 className="text-2xl font-bold">Welcome Back!</h2>
+                  <p className="mt-2 text-center">Start your session from where you left it</p>
+                  <p className="text-center">OR</p>
                   <button
                     className="mt-4 px-4 py-2 bg-[#F5F3E4] text-[#8B5E3C] rounded-lg shadow hover:bg-opacity-90"
-                    onClick={() => setIsSignIn(false)}
+                    onClick={() => navigate("/signup")}
                   >
                     Sign Up
                   </button>
