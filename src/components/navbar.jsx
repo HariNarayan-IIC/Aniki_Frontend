@@ -1,50 +1,35 @@
 import React from "react";
 import { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+    <>
+    <nav className="bg-white shadow-md py-4 px-3 md:px-6 flex justify-between items-center">
+      
       {/* Logo */}
-      <div className="text-2xl font-bold italic">Aniki</div>
+      <div className="text-2xl font-bold italic">
+        <NavLink to={"/"}>Aniki</NavLink>
+      </div>
 
       {/* Desktop Menu */}
       <ul className="hidden md:flex space-x-6 text-lg">
-        <li className="hover:text-gray-600 cursor-pointer">Home Page</li>
-        <li className="hover:text-gray-600 cursor-pointer">About Us</li>
-        <li className="hover:text-gray-600 cursor-pointer">Contact Us</li>
-        <li className="hover:text-gray-600 cursor-pointer">Resources</li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/"} className={({isActive}) => isActive?"underline font-bold":""}>Home</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/roadmaps"} className={({isActive}) => isActive?"underline font-bold":""}>Roadmaps</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/communities"} className={({isActive}) => isActive?"underline font-bold":""}>Communities</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/resources"} className={({isActive}) => isActive?"underline font-bold":""}>Resources</NavLink></li>
       </ul>
-
+      
       {/* Buttons */}
-      <div className="hidden md:flex space-x-4">
-        <button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button>
-        <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button>
+      <div className="flex md:space-x-4 space-x-2">
+        <Link to="signup"><button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button></Link>
+        <Link to={"/login"}><button className="px-4 py-2 bg-green-700 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button></Link>
       </div>
-
-      {/* Mobile Menu Toggle Button */}
-      <div className="md:hidden text-2xl cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? <FaTimes /> : <FaBars />}
-      </div>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="absolute top-16 left-0 w-full bg-white shadow-md py-4 flex flex-col items-center md:hidden">
-          <ul className="space-y-4 text-lg">
-            <li className="hover:text-gray-600 cursor-pointer">Home Page</li>
-            <li className="hover:text-gray-600 cursor-pointer">About Us</li>
-            <li className="hover:text-gray-600 cursor-pointer">Contact Us</li>
-            <li className="hover:text-gray-600 cursor-pointer">Resources</li>
-          </ul>
-          <div className="mt-4 space-y-2">
-            <button className="px-4 py-2 border rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Signup</button>
-            <button className="px-4 py-2 bg-green-500 text-white rounded-lg w-full hover:scale-105 transition-transform cursor-pointer">Login</button>
-          </div>
-        </div>
-      )}
+      
     </nav>
+    </>
   );
 };
 

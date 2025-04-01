@@ -46,7 +46,7 @@ const Footer = () => {
         </div>
       </div>
         
-      <div className="border-t border-gray-700 mt-6 pt-4 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
+      <div className="border-t border-gray-700 mt-6 pt-4 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm pb-20 md:pb-0">
         <p className="text-left text-gray-300 md:self-start">© 2025 Aniki. All rights reserved.</p>
         <div className="flex justify-center gap-6 mt-2 md:mt-0 text-gray-200">
           {["Privacy Policy", "Terms of Service", "Cookies Settings"].map((item) => (
