@@ -1,11 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router";
+import {useLocation, useNavigate } from "react-router";
+import {baseURL} from '../constants.js'
+
+
 
 const AuthCard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(location.pathname === "/login");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [formData, setFormData] = useState({
+    "username": "",
+    "email": "",
+    "fullName": "",
+    "password": "",
+    "confirmPassword": ""
+  });
+
+  const registerUser = async () => {
+    await fetch(
+      `${baseURL}/api/v1/users/register`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', // <- important!
+        },
+        body: JSON.stringify({
+          username: formData.username, 
+          email: formData.email,
+          fullName: formData.fullName, 
+          password: formData.password
+        })
+      }
+    )
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        navigate("/otpVerificationPage")
+      }
+    })
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,7 +61,12 @@ const AuthCard = () => {
                 <input type="text" placeholder="Your Name" className="w-full p-2 mt-4 border rounded bg-gray-100 text-black" />
                 <input type="email" placeholder="Your Email" className="w-full p-2 mt-2 border rounded bg-gray-100 text-black" />
                 <input type="password" placeholder="Your Password" className="w-full p-2 mt-2 border rounded bg-gray-100 text-black" />
-                <button className="w-full p-2 mt-4 bg-[#8B5E3C] text-white rounded-lg hover:bg-opacity-90">Sign Up</button>
+                <button 
+                className="w-full p-2 mt-4 bg-[#8B5E3C] text-white rounded-lg hover:bg-opacity-90"
+                onClick={registerUser}
+                >
+                Sign Up
+                </button>
                 <p className="mt-2 text-[#8B5E3C] font-semibold">OR</p>
                 <p
                   className="mt-2 text-[#8B5E3C] font-semibold cursor-pointer"
@@ -77,10 +115,62 @@ const AuthCard = () => {
               {!isSignIn ? (
                 <>
                   <h2 className="text-2xl font-bold">Sign Up</h2>
-                  <input type="text" placeholder="Your Name" className="w-full p-2 mt-4 border rounded bg-gray-100 text-black" />
-                  <input type="email" placeholder="Your Email" className="w-full p-2 mt-2 border rounded bg-gray-100 text-black" />
-                  <input type="password" placeholder="Your Password" className="w-full p-2 mt-2 border rounded bg-gray-100 text-black" />
-                  <button className="w-full p-2 mt-4 bg-[#8B5E3C] text-white rounded-lg hover:bg-opacity-90">Sign Up</button>
+                  <input
+                      type="text"
+                      name="fullName"
+                      placeholder="Full Name"
+                      className="w-full p-2 mt-4 border rounded bg-gray-100 text-black"
+                      value={formData.fullName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, [e.target.name]: e.target.value })
+                      }
+                  />
+                  <input 
+                    type="text"
+                    name="username"
+                    placeholder="Username" 
+                    className="w-full p-2 mt-2 border rounded bg-gray-100 text-black"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, [e.target.name]: e.target.value })
+                    } 
+                  />
+                  <input 
+                    type="email"
+                    name="email"
+                    placeholder="Email" 
+                    className="w-full p-2 mt-2 border rounded bg-gray-100 text-black"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({...formData, [e.target.name]: e.target.value})
+                    }
+                  />
+                  <input 
+                    type="password"
+                    name="password"
+                    placeholder="Set Password"
+                    className="w-full p-2 mt-2 border rounded bg-gray-100 text-black"
+                    value={formData.password}
+                    onChange={(e) => 
+                      setFormData({...formData, [e.target.name]: e.target.value})
+                    }
+                  />
+                  <input 
+                    type="password" 
+                    name="confirmPassword"
+                    placeholder="Confirm Password" 
+                    className="w-full p-2 mt-2 border rounded bg-gray-100 text-black" 
+                    value={formData.confirmPassword}
+                    onChange={(e) => 
+                      setFormData({...formData, [e.target.name]: e.target.value})
+                    }
+                  />
+                  <button 
+                    className="w-full p-2 mt-4 bg-[#8B5E3C] text-white rounded-lg hover:bg-opacity-90"
+                    onClick={registerUser}
+                  >
+                    Sign Up
+                  </button>
                 </>
               ) : (
                 <>
