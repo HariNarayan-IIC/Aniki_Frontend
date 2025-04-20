@@ -1,9 +1,7 @@
 import React from "react";
-import { useState } from "react";
 import { Link, NavLink } from "react-router";
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Navbar = ({isLoggedIn}) => {
 
   return (
     <>
@@ -22,11 +20,23 @@ const Navbar = () => {
         <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/resources"} className={({isActive}) => isActive?"underline font-bold":""}>Resources</NavLink></li>
       </ul>
       
-      {/* Buttons */}
+      {!isLoggedIn? 
+      /* Buttons */
       <div className="flex md:space-x-4 space-x-2">
         <Link to="signup"><button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button></Link>
         <Link to={"/login"}><button className="px-4 py-2 bg-green-700 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button></Link>
       </div>
+      :
+      /* Buttons */
+      <div className="flex md:space-x-4 space-x-2">
+        <button 
+        className="px-4 py-2 bg-green-700 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer"
+        >
+          Logout
+        </button>
+      </div>
+      }
+      
       
     </nav>
     </>
