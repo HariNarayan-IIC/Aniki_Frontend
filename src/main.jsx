@@ -8,6 +8,7 @@ import DashboardPage from './DashboardPage.jsx';
 
 import RoadmapsPage from './RoadmapsPage.jsx';
 import PageNotFound from './404Page.jsx';
+import OTPVerificationPage from './otpVerificationPage.jsx';
 
 let router = createBrowserRouter([
   {
@@ -31,8 +32,12 @@ let router = createBrowserRouter([
         element: <DashboardPage/>
       },
       {
-        path: "/roadmaps",
+        path: "roadmaps",
         element: <RoadmapsPage/>
+      },
+      {
+        path: "otpVerification",
+        element: <OTPVerificationPage/>
       },
       {
         path: "*",
