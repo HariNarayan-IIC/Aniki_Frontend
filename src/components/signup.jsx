@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { baseURL } from "../constants.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const AuthCard = () => {
+  const { setIsAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(location.pathname === "/login");
@@ -31,6 +33,31 @@ const AuthCard = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
+          navigate("/otpVerification", { state: { email: formData.email } });
+        }
+      });
+  };
+
+  const loginUser = async () => {
+    await fetch(`${baseURL}/api/v1/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // <- important!
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password
+      }),
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((body) => {
+        if (body.success) {
+          if (body.data.user.isEmailVerified) {
+            setIsAuthenticated(true);
+            navigate("/dashboard");
+            return;
+          }
           navigate("/otpVerification", { state: { email: formData.email } });
         }
       });
@@ -136,15 +163,32 @@ const AuthCard = () => {
                   </h2>
                   <input
                     type="email"
+                    name="email"
                     placeholder="Your email here"
                     className="w-full p-2 mt-4 border rounded bg-gray-100"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
                   />
                   <input
                     type="password"
+                    name="password"
                     placeholder="Your password here"
                     className="w-full p-2 mt-2 border rounded bg-gray-100"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
                   />
-                  <button className="w-full p-2 mt-4 text-white bg-[#8B5E3C] rounded-lg hover:bg-opacity-80">
+                  <button className="w-full p-2 mt-4 text-white bg-[#8B5E3C] rounded-lg hover:bg-opacity-80"
+                  onClick={loginUser}>
                     Sign In
                   </button>
                 </>

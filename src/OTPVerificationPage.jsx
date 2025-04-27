@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { baseURL } from "./constants";
-import { Outlet, useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
 export default function OTPVerification() {
-    const {setIsLoggedIn} = useOutletContext();
+    const { setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const email = location.state?.email;
-
+ 
     const [otp, setOtp] = useState(["", "", "", ""]);
-    const [timer, setTimer] = useState(10);
+    const [timer, setTimer] = useState(60);
 
     useEffect(() => {
+        if (!email || email=="") {
+            navigate("/PageNotFound");
+        }
         const sendVerificationRequest = async () => {
             try {
                 await fetch(`${baseURL}/api/v1/users/verify-email`, {
@@ -56,11 +60,12 @@ export default function OTPVerification() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ otp: enteredOtp, email }),
+                credentials: 'include'
             })
             .then((res) => res.json())
                 .then((data) => {
                     if (data.success) {
-                        setIsLoggedIn(true)
+                        setIsAuthenticated(true);
                         navigate("/dashboard")
                     }
                 }

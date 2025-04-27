@@ -9,11 +9,13 @@ import DashboardPage from './DashboardPage.jsx';
 import RoadmapsPage from './RoadmapsPage.jsx';
 import PageNotFound from './404Page.jsx';
 import OTPVerificationPage from './otpVerificationPage.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+import ProtectedRoute from './ProtectedRoute.jsx'
 
 let router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>,
+    element: <AuthProvider><App/></AuthProvider>,
     children: [
       {
         path: "signup",
@@ -29,7 +31,7 @@ let router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <DashboardPage/>
+        element: <ProtectedRoute><DashboardPage/></ProtectedRoute> 
       },
       {
         path: "roadmaps",
