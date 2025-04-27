@@ -8,7 +8,7 @@ import DashboardPage from './DashboardPage.jsx';
 
 import RoadmapsPage from './RoadmapsPage.jsx';
 import PageNotFound from './404Page.jsx';
-import OTPVerificationPage from './otpVerificationPage.jsx';
+import OTPVerificationPage from './OTPVerificationPage.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx'
 
