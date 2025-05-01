@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -16,7 +17,19 @@ export const AuthProvider = ({ children }) => {
           method: 'POST',
           credentials: 'include' 
         })
-        setIsAuthenticated(res.ok);
+        .then((res) => res.json())
+        .then((body) => {
+          if (body.success) {
+            setIsAuthenticated(true);
+            if (body.data.user.role === "admin") {
+              setIsAdmin(true);
+            //   navigate("/adminPanel", {replace: true});
+            // }
+            // else {
+            //   navigate("/dashboard", {replace: true});
+            }
+          }
+        });
       } catch {
         setIsAuthenticated(false);
       } finally {
@@ -41,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, logoutUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, isAdmin, loading, setIsAuthenticated, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );

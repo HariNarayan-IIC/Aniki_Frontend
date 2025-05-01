@@ -55,6 +55,10 @@ const AuthCard = () => {
         if (body.success) {
           if (body.data.user.isEmailVerified) {
             setIsAuthenticated(true);
+            if (body.data.user.role === "admin") {
+              navigate("/adminPanel");
+              return;
+            }
             navigate("/dashboard");
             return;
           }

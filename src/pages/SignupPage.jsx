@@ -1,6 +1,6 @@
 // src/About.js
 import React from "react";
-import AuthCard from "./components/signup"
+import AuthCard from "../components/signup"
 
 const SignupPage = () => {
   return (

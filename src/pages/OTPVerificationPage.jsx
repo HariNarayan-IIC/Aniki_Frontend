@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { baseURL } from "./constants";
+import { baseURL } from "../constants";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function OTPVerification() {
     const { setIsAuthenticated } = useAuth();
@@ -14,7 +14,7 @@ export default function OTPVerification() {
 
     useEffect(() => {
         if (!email || email=="") {
-            navigate("/PageNotFound");
+            navigate("/PageNotFound", {replace: true});
         }
         const sendVerificationRequest = async () => {
             try {
@@ -66,7 +66,7 @@ export default function OTPVerification() {
                 .then((data) => {
                     if (data.success) {
                         setIsAuthenticated(true);
-                        navigate("/dashboard")
+                        navigate("/dashboard", {replace: true})
                     }
                 }
                 )

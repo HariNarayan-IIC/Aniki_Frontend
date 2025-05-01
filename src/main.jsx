@@ -2,15 +2,19 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router";
 import './index.css'
 import App from './App.jsx'
-import SignupPage from './SignupPage.jsx';
-import LandingPage from './LandingPage.jsx';
-import DashboardPage from './DashboardPage.jsx';
-
-import RoadmapsPage from './RoadmapsPage.jsx';
-import PageNotFound from './404Page.jsx';
-import OTPVerificationPage from './OTPVerificationPage.jsx';
+import SignupPage from './pages/SignupPage.jsx';
+import LandingPage from './pages/LandingPage.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
+import RoadmapsCataloguePage from './pages/RoadmapsCataloguePage.jsx';
+import RoadmapPage from './pages/RoadmapPage.jsx';
+import PageNotFound from './pages/404Page.jsx';
+import OTPVerificationPage from './pages/OTPVerificationPage.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
-import ProtectedRoute from './ProtectedRoute.jsx'
+import ProtectedRoute from './utils/ProtectedRoute.jsx';
+import AdminOnlyRoute from './utils/AdminOnlyRoute.jsx';
+import AdminPanel from './pages/AdminPanel.jsx';
+import AdminRoadmapEditor from './pages/RoadmapEditorPage.jsx';
+import { ReactFlowProvider } from 'reactflow';
 
 let router = createBrowserRouter([
   {
@@ -35,16 +39,29 @@ let router = createBrowserRouter([
       },
       {
         path: "roadmaps",
-        element: <RoadmapsPage/>
+        element: <RoadmapsCataloguePage/>
+      },
+      {
+        path: "roadmap/:id",
+        element: <ReactFlowProvider><RoadmapPage /></ReactFlowProvider>
       },
       {
         path: "otpVerification",
         element: <OTPVerificationPage/>
       },
       {
+        path: "adminPanel",
+        element: <AdminOnlyRoute><AdminPanel/></AdminOnlyRoute>
+      },
+      {
+        path: "roadmapEditor",
+        element: <AdminOnlyRoute><ReactFlowProvider><AdminRoadmapEditor/></ReactFlowProvider></AdminOnlyRoute>
+      },
+      {
         path: "*",
         element: <PageNotFound/>
-      }
+      },
+      
     ]
   }
   
