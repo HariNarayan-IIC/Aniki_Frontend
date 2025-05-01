@@ -56,10 +56,10 @@ const AuthCard = () => {
           if (body.data.user.isEmailVerified) {
             setIsAuthenticated(true);
             if (body.data.user.role === "admin") {
-              navigate("/adminPanel");
+              navigate("/adminPanel", {replace: true});
               return;
             }
-            navigate("/dashboard");
+            navigate("/dashboard", {replace: true});
             return;
           }
           navigate("/otpVerification", { state: { email: formData.email } });
