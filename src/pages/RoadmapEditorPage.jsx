@@ -35,6 +35,8 @@ function AdminRoadmapEditor() {
         borderRadius: 8,
         background: '#fff',
       },
+      description: "",
+      resources: []
     };
     setNodes((nds) => [...nds, newNode]);
   };
