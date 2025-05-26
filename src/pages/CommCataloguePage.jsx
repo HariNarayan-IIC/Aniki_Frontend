@@ -43,7 +43,8 @@ export default function ChatRoomsCataloguePage() {
 
   const handleJoin = (id) => {
     if (!isLoggedIn) {
-      navigate("/login");
+      //navigate("/login");
+      navigate(`/chatRoom/${id}`);
     } else {
       navigate(`/chatRoom/${id}`);
     }
