@@ -15,11 +15,14 @@ import AdminOnlyRoute from './utils/AdminOnlyRoute.jsx';
 import AdminPanel from './pages/AdminPanel.jsx';
 import AdminRoadmapEditor from './pages/RoadmapEditorPage.jsx';
 import { ReactFlowProvider } from 'reactflow';
+import { SocketProvider } from './context/SocketContext.jsx';
+import ChatRoomsCataloguePage from './pages/ChatRoomsCataloguePage.jsx';
+import ChatRoomPage from './pages/ChatRoomPage.jsx'
 
 let router = createBrowserRouter([
   {
     path: "/",
-    element: <AuthProvider><App/></AuthProvider>,
+    element: <AuthProvider><SocketProvider><App/></SocketProvider></AuthProvider>,
     children: [
       {
         path: "signup",
@@ -56,6 +59,14 @@ let router = createBrowserRouter([
       {
         path: "roadmapEditor",
         element: <AdminOnlyRoute><ReactFlowProvider><AdminRoadmapEditor/></ReactFlowProvider></AdminOnlyRoute>
+      },
+      {
+        path: "communities",
+        element: <ChatRoomsCataloguePage/>
+      },
+      {
+        path: "chatroom/:roomId",
+        element: <ChatRoomPage/>
       },
       {
         path: "*",
