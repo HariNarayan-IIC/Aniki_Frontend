@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import zoroPng from "../assets/zoro.png";
 import luffyPng from "../assets/luffy.png";
+import GoogleSignInButton from "./googleSignInButton";
 
 // Infinite typing animation for "Hello, Wakai!" and "Welcome Back!"
 const TypingText = ({ text, speed = 60, eraseSpeed = 40, delay = 1200 }) => {
