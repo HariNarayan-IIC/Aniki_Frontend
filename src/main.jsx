@@ -16,7 +16,7 @@ import AdminPanel from './pages/AdminPanel.jsx';
 import AdminRoadmapEditor from './pages/RoadmapEditorPage.jsx';
 import { ReactFlowProvider } from 'reactflow';
 import { SocketProvider } from './context/SocketContext.jsx';
-import ChatRoomsCataloguePage from './pages/ChatRoomsCataloguePage.jsx';
+import ChatRoomsCataloguePage from './pages/CommCataloguePage.jsx';
 import ChatRoomPage from './pages/ChatRoomPage.jsx'
 
 let router = createBrowserRouter([
