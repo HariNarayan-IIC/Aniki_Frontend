@@ -4,7 +4,8 @@ import { Fetch } from '../utils/fetch'
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
 
-const GoogleSignInButton = () => {
+
+const GoogleSignInButton = ({ text }) => {
   const { setIsAuthenticated, setIsAdmin } = useAuth();
   const buttonRef = useRef(null);
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const GoogleSignInButton = () => {
       window.google.accounts.id.renderButton(buttonRef.current, {
         theme: "outline",
         size: "large",
-        text: "sign_up_with",
+        text,
         shape: "rectangular",
         logo_alignment: "left",
       });

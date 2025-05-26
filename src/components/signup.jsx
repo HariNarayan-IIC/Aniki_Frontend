@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import zoroPng from "../assets/zoro.png";
 import luffyPng from "../assets/luffy.png";
 import GoogleSignInButton from "./googleSignInButton";
+import { Fetch } from "../utils/fetch";
+import { useAuth } from "../context/AuthContext.jsx";
+
 
 // Infinite typing animation for "Hello, Wakai!" and "Welcome Back!"
 const TypingText = ({ text, speed = 60, eraseSpeed = 40, delay = 1200 }) => {
@@ -104,10 +107,10 @@ const AuthCard = () => {
           </g>
           <defs>
             <filter id="glow" x="-10" y="-10" width="76" height="76" filterUnits="userSpaceOnUse">
-              <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
@@ -161,9 +164,43 @@ const AuthCard = () => {
       email: "",
     });
 
-    const registerUser = () => {
+    const validateSignupData = () => {
+      if (signUpData.first.length < 1) {
+        alert("First name cannot be empty");
+        return false;
+      }
+      if (signUpData.password !== signUpData.confirm){
+        alert("Password doesn't match");
+        return false
+      }
+      return true;
+    }
+
+    const registerUser = async() => {
       // You can add validation here if needed
-      alert("Sign Up: " + JSON.stringify(signUpData, null, 2));
+      if (!validateSignupData()) {
+        return
+      }
+      await Fetch("/api/v1/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // <- important!
+      },
+      body: JSON.stringify({
+        email: signUpData.email,
+        fullName: signUpData.first + signUpData.last,
+        password: signUpData.password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          navigate("/otpVerification", { state: { email: signUpData.email } });
+        }
+        else {
+          alert(data.message)
+        }
+      });
     };
 
     return (
@@ -186,7 +223,8 @@ const AuthCard = () => {
           Sign Up
         </h2>
         {/* Google Signup Button */}
-        <button
+        <div className="pb-6"><GoogleSignInButton /></div>
+        {/* <button
           onClick={handleGoogleSignUp}
           className="flex items-center justify-center gap-2 w-full mb-5 py-2 rounded-lg border border-[#388E3C] bg-white text-[#388E3C] font-semibold hover:bg-[#eafaf1] transition"
           style={{ boxShadow: "0 1px 4px 0 rgba(44,195,137,0.08)" }}
@@ -200,7 +238,7 @@ const AuthCard = () => {
             </g>
           </svg>
           Sign up with Google
-        </button>
+        </button> */}
         <div className="flex gap-4 mb-4">
           <input
             type="text"
@@ -264,14 +302,43 @@ const AuthCard = () => {
   };
 
   const LoginFormCard = () => {
+    const { setIsAuthenticated, setIsAdmin } = useAuth();
     const [loginData, setLoginData] = useState({
       email: "",
       password: "",
     });
 
-    const loginUser = () => {
-      // You can add validation here if needed
-      alert("Login: " + JSON.stringify(loginData, null, 2));
+    const loginUser = async () => {
+      await Fetch("/api/v1/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // <- important!
+        },
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password
+        }),
+        credentials: 'include',
+      })
+        .then((res) => res.json())
+        .then((body) => {
+          if (body.success) {
+            if (body.data.user.isEmailVerified) {
+              setIsAuthenticated(true);
+              if (body.data.user.role === "admin") {
+                setIsAdmin(true)
+                navigate("/adminPanel", { replace: true });
+                return;
+              }
+              navigate("/dashboard", { replace: true });
+              return;
+            }
+            navigate("/otpVerification", { state: { email: loginData.email } });
+          }
+          else {
+            alert(body.message)
+          }
+        });
     };
 
     return (
@@ -294,7 +361,9 @@ const AuthCard = () => {
           Login
         </h2>
         {/* Google Signup Button */}
-        <button
+        <div className="pb-6"><GoogleSignInButton /></div>
+
+        {/* <button
           onClick={handleGoogleSignUp}
           className="flex items-center justify-center gap-2 w-full mb-5 py-2 rounded-lg border border-[#388E3C] bg-white text-[#388E3C] font-semibold hover:bg-[#eafaf1] transition"
           style={{ boxShadow: "0 1px 4px 0 rgba(44,195,137,0.08)" }}
@@ -308,7 +377,7 @@ const AuthCard = () => {
             </g>
           </svg>
           Sign in with Google
-        </button>
+        </button> */}
         <input
           type="email"
           placeholder="Email"
