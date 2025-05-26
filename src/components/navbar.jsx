@@ -1,10 +1,13 @@
 import React from "react";
-import { useState } from "react";
-import { MdMenu, MdClose, MdHome, MdRoute, MdForum, MdBook} from "react-icons/md";
 import { Link, NavLink } from "react-router";
+import {useAuth} from "../context/AuthContext.jsx";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, loading, logoutUser } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <>
@@ -17,36 +20,36 @@ const Navbar = () => {
 
       {/* Desktop Menu */}
       <ul className="hidden md:flex space-x-6 text-lg">
-        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/"} className={({isActive}) => isActive?"underline":""}>Home Page</NavLink></li>
-        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/roadmaps"}>Roadmaps</NavLink></li>
-        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/communities"}>Communities</NavLink></li>
-        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/resources"}>Resources</NavLink></li>
+        {!isAuthenticated? 
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/"} className={({isActive}) => isActive?"underline font-bold":""}>Home</NavLink></li>
+        :
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/dashboard"} className={({isActive}) => isActive?"underline font-bold":""}>Dashboard</NavLink></li>
+        }
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/roadmaps"} className={({isActive}) => isActive?"underline font-bold":""}>Roadmaps</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/communities"} className={({isActive}) => isActive?"underline font-bold":""}>Communities</NavLink></li>
+        <li className="hover:text-gray-600 cursor-pointer"><NavLink to={"/resources"} className={({isActive}) => isActive?"underline font-bold":""}>Resources</NavLink></li>
       </ul>
       
-      {/* Buttons */}
+      {!isAuthenticated? 
+      /* Buttons */
       <div className="flex md:space-x-4 space-x-2">
         <Link to="signup"><button className="px-4 py-2 border rounded-lg hover:scale-105 transition-transform cursor-pointer">Signup</button></Link>
-        <button className="px-4 py-2 bg-green-700 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button>
+        <Link to={"/login"}><button className="px-4 py-2 bg-green-700 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer">Login</button></Link>
       </div>
-
-      {/* Mobile Menu Toggle Button */}
-      {/* <div className="md:hidden text-2xl cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? <MdClose /> : <MdMenu />}
-      </div> */}
-
+      :
+      /* Buttons */
+      <div className="flex md:space-x-4 space-x-2">
+        <button 
+        className="px-4 py-2 bg-green-700 text-white rounded-lg hover:scale-105 transition-transform cursor-pointer"
+        onClick={logoutUser}
+        >
+          Logout
+        </button>
+      </div>
+      }
+      
       
     </nav>
-
-    {/* Mobile Menu */}
-    {/* <div className="fix left-0 bottom-0 w-full bg-white shadow-md py-4 flex items-center md:hidden">
-      <ul className="space-y-4 text-lg flex justify-evenly w-full">
-        <li className="hover:text-gray-600 cursor-pointer"><MdHome/></li>
-        <li className="hover:text-gray-600 cursor-pointer"><MdRoute/></li>
-        <li className="hover:text-gray-600 cursor-pointer"><MdForum/></li>
-        <li className="hover:text-gray-600 cursor-pointer"><MdBook/></li>
-      </ul>
-      
-    </div> */}
     </>
   );
 };
