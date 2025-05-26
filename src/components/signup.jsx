@@ -55,25 +55,6 @@ const AuthCard = () => {
     return () => clearTimeout(timeout);
   }, [location.pathname]);
 
-  // Form state for both Sign Up and Login
-  const [formData, setFormData] = useState({
-    first: "",
-    last: "",
-    password: "",
-    role: "",
-    confirm: "",
-    email: "",
-  });
-
-  // Dummy handlers for demonstration
-  const registerUser = () => {
-    alert("Sign Up: " + JSON.stringify(formData, null, 2));
-  };
-
-  const loginUser = () => {
-    alert("Login: " + JSON.stringify(formData, null, 2));
-  };
-
   const handleGoogleSignUp = () => {
     alert("Google sign up coming soon!");
   };
@@ -168,180 +149,200 @@ const AuthCard = () => {
     </div>
   );
 
-  const SignUpFormCard = () => (
-    <div
-      className={`
-        flex flex-col justify-center px-10 py-10
-        transition-all duration-300
-        w-[390px] h-[540px]
-      `}
-      style={{
-        background: "rgba(255,255,255,0.97)",
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0,
-        borderTopRightRadius: 32,
-        borderBottomRightRadius: 32,
-        boxShadow: "0 6px 32px 0 rgba(44, 195, 137, 0.10)",
-      }}
-    >
-      <h2 className="text-[2.2rem] font-bold text-[#388E3C] mb-8 text-center">
-        Sign Up
-      </h2>
-      {/* Google Signup Button */}
-      <button
-        onClick={handleGoogleSignUp}
-        className="flex items-center justify-center gap-2 w-full mb-5 py-2 rounded-lg border border-[#388E3C] bg-white text-[#388E3C] font-semibold hover:bg-[#eafaf1] transition"
-        style={{ boxShadow: "0 1px 4px 0 rgba(44,195,137,0.08)" }}
+  // --- FIXED: Separate state for Signup and Login forms ---
+
+  const SignUpFormCard = () => {
+    const [signUpData, setSignUpData] = useState({
+      first: "",
+      last: "",
+      password: "",
+      confirm: "",
+      email: "",
+    });
+
+    const registerUser = () => {
+      // You can add validation here if needed
+      alert("Sign Up: " + JSON.stringify(signUpData, null, 2));
+    };
+
+    return (
+      <div
+        className={`
+          flex flex-col justify-center px-10 py-10
+          transition-all duration-300
+          w-[390px] h-[540px]
+        `}
+        style={{
+          background: "rgba(255,255,255,0.97)",
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+          borderTopRightRadius: 32,
+          borderBottomRightRadius: 32,
+          boxShadow: "0 6px 32px 0 rgba(44, 195, 137, 0.10)",
+        }}
       >
-        <svg width="22" height="22" viewBox="0 0 48 48" className="inline-block">
-          <g>
-            <path fill="#4285F4" d="M44.5 20H24v8.5h11.7C34.6 33.2 29.8 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
-            <path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.1 19.2 13 24 13c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 16.5 3 9.8 7.4 6.3 14.7z"/>
-            <path fill="#FBBC05" d="M24 45c5.8 0 10.6-1.9 14.2-5.2l-6.6-5.4C29.6 36.7 26.9 38 24 38c-5.8 0-10.7-3.9-12.5-9.3l-7.1 5.5C9.8 40.6 16.5 45 24 45z"/>
-            <path fill="#EA4335" d="M44.5 20H24v8.5h11.7c-1.3 3.3-4.6 7.5-11.7 7.5-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
-          </g>
-        </svg>
-        Sign up with Google
-      </button>
-      <div className="flex gap-4 mb-4">
+        <h2 className="text-[2.2rem] font-bold text-[#388E3C] mb-8 text-center">
+          Sign Up
+        </h2>
+        {/* Google Signup Button */}
+        <button
+          onClick={handleGoogleSignUp}
+          className="flex items-center justify-center gap-2 w-full mb-5 py-2 rounded-lg border border-[#388E3C] bg-white text-[#388E3C] font-semibold hover:bg-[#eafaf1] transition"
+          style={{ boxShadow: "0 1px 4px 0 rgba(44,195,137,0.08)" }}
+        >
+          <svg width="22" height="22" viewBox="0 0 48 48" className="inline-block">
+            <g>
+              <path fill="#4285F4" d="M44.5 20H24v8.5h11.7C34.6 33.2 29.8 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
+              <path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.1 19.2 13 24 13c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 16.5 3 9.8 7.4 6.3 14.7z"/>
+              <path fill="#FBBC05" d="M24 45c5.8 0 10.6-1.9 14.2-5.2l-6.6-5.4C29.6 36.7 26.9 38 24 38c-5.8 0-10.7-3.9-12.5-9.3l-7.1 5.5C9.8 40.6 16.5 45 24 45z"/>
+              <path fill="#EA4335" d="M44.5 20H24v8.5h11.7c-1.3 3.3-4.6 7.5-11.7 7.5-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
+            </g>
+          </svg>
+          Sign up with Google
+        </button>
+        <div className="flex gap-4 mb-4">
+          <input
+            type="text"
+            placeholder="First Name"
+            value={signUpData.first}
+            onChange={e => setSignUpData({ ...signUpData, first: e.target.value })}
+            className="w-1/2 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+            name="first"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={signUpData.last}
+            onChange={e => setSignUpData({ ...signUpData, last: e.target.value })}
+            className="w-1/2 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+            name="last"
+          />
+        </div>
         <input
-          type="text"
-          placeholder="First Name"
-          value={formData.first}
-          onChange={e => setFormData({ ...formData, first: e.target.value })}
-          className="w-1/2 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
-          name="first"
+          type="email"
+          placeholder="Email"
+          value={signUpData.email}
+          onChange={e => setSignUpData({ ...signUpData, email: e.target.value })}
+          className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+          name="email"
         />
         <input
-          type="text"
-          placeholder="Last Name"
-          value={formData.last}
-          onChange={e => setFormData({ ...formData, last: e.target.value })}
-          className="w-1/2 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
-          name="last"
+          type="password"
+          placeholder="Enter Password"
+          value={signUpData.password}
+          onChange={e => setSignUpData({ ...signUpData, password: e.target.value })}
+          className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+          name="password"
         />
-      </div>
-      <input
-        type="password"
-        placeholder="Enter Password"
-        value={formData.password}
-        onChange={e => setFormData({ ...formData, password: e.target.value })}
-        className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
-        name="password"
-      />
-      <div className="flex gap-4 mb-4">
-        <select
-      value={formData.role}
-      onChange={e => setFormData({ ...formData, role: e.target.value })}
-      className="w-1/3 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
-      name="role"
-    >
-      <option value="" disabled>
-        Role
-      </option>
-      <option value="Student">Student</option>
-      <option value="Experts">Experts</option>
-      <option value="Other">Other</option>
-    </select>
-
-
         <input
           type="password"
           placeholder="Confirm Password"
-          value={formData.confirm}
-          onChange={e => setFormData({ ...formData, confirm: e.target.value })}
-          className="w-2/3 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+          value={signUpData.confirm}
+          onChange={e => setSignUpData({ ...signUpData, confirm: e.target.value })}
+          className="w-full p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
           name="confirm"
         />
-      </div>
-      <button
-        className="w-full mt-2 py-3 rounded-lg bg-[#388E3C] text-white font-semibold text-lg shadow hover:bg-[#2e7031] transition"
-        onClick={registerUser}
-      >
-        Sign Up
-      </button>
-      <div className="mt-5 text-center">
-        <span className="text-[#388E3C] font-medium mr-1">Already have an account?</span>
         <button
-          className="text-[#207845] font-semibold underline hover:text-[#388E3C] transition"
-          onClick={goToLogin}
-          type="button"
-        >
-          Login
-        </button>
-      </div>
-    </div>
-  );
-
-  const LoginFormCard = () => (
-    <div
-      className={`
-        flex flex-col justify-center px-10 py-10
-        transition-all duration-300
-        w-[390px] h-[540px]
-      `}
-      style={{
-        background: "rgba(255,255,255,0.97)",
-        borderTopLeftRadius: 32,
-        borderBottomLeftRadius: 32,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        boxShadow: "0 6px 32px 0 rgba(44, 195, 137, 0.10)",
-      }}
-    >
-      <h2 className="text-[2.2rem] font-bold text-[#388E3C] mb-8 text-center">
-        Login
-      </h2>
-      {/* Google Signup Button */}
-      <button
-        onClick={handleGoogleSignUp}
-        className="flex items-center justify-center gap-2 w-full mb-5 py-2 rounded-lg border border-[#388E3C] bg-white text-[#388E3C] font-semibold hover:bg-[#eafaf1] transition"
-        style={{ boxShadow: "0 1px 4px 0 rgba(44,195,137,0.08)" }}
-      >
-        <svg width="22" height="22" viewBox="0 0 48 48" className="inline-block">
-          <g>
-            <path fill="#4285F4" d="M44.5 20H24v8.5h11.7C34.6 33.2 29.8 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
-            <path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.1 19.2 13 24 13c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 16.5 3 9.8 7.4 6.3 14.7z"/>
-            <path fill="#FBBC05" d="M24 45c5.8 0 10.6-1.9 14.2-5.2l-6.6-5.4C29.6 36.7 26.9 38 24 38c-5.8 0-10.7-3.9-12.5-9.3l-7.1 5.5C9.8 40.6 16.5 45 24 45z"/>
-            <path fill="#EA4335" d="M44.5 20H24v8.5h11.7c-1.3 3.3-4.6 7.5-11.7 7.5-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
-          </g>
-        </svg>
-        Sign in with Google
-      </button>
-      <input
-        type="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={e => setFormData({ ...formData, email: e.target.value })}
-        className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
-        name="email"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={e => setFormData({ ...formData, password: e.target.value })}
-        className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
-        name="password"
-      />
-      <button
-        className="w-full mt-2 py-3 rounded-lg bg-[#388E3C] text-white font-semibold text-lg shadow hover:bg-[#2e7031] transition"
-        onClick={loginUser}
-      >
-        Login
-      </button>
-      <div className="mt-5 text-center">
-        <span className="text-[#388E3C] font-medium mr-1">Don't have an account?</span>
-        <button
-          className="text-[#207845] font-semibold underline hover:text-[#388E3C] transition"
-          onClick={goToSignUp}
-          type="button"
+          className="w-full mt-2 py-3 rounded-lg bg-[#388E3C] text-white font-semibold text-lg shadow hover:bg-[#2e7031] transition"
+          onClick={registerUser}
         >
           Sign Up
         </button>
+        <div className="mt-5 text-center">
+          <span className="text-[#388E3C] font-medium mr-1">Already have an account?</span>
+          <button
+            className="text-[#207845] font-semibold underline hover:text-[#388E3C] transition"
+            onClick={goToLogin}
+            type="button"
+          >
+            Login
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  const LoginFormCard = () => {
+    const [loginData, setLoginData] = useState({
+      email: "",
+      password: "",
+    });
+
+    const loginUser = () => {
+      // You can add validation here if needed
+      alert("Login: " + JSON.stringify(loginData, null, 2));
+    };
+
+    return (
+      <div
+        className={`
+          flex flex-col justify-center px-10 py-10
+          transition-all duration-300
+          w-[390px] h-[540px]
+        `}
+        style={{
+          background: "rgba(255,255,255,0.97)",
+          borderTopLeftRadius: 32,
+          borderBottomLeftRadius: 32,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          boxShadow: "0 6px 32px 0 rgba(44, 195, 137, 0.10)",
+        }}
+      >
+        <h2 className="text-[2.2rem] font-bold text-[#388E3C] mb-8 text-center">
+          Login
+        </h2>
+        {/* Google Signup Button */}
+        <button
+          onClick={handleGoogleSignUp}
+          className="flex items-center justify-center gap-2 w-full mb-5 py-2 rounded-lg border border-[#388E3C] bg-white text-[#388E3C] font-semibold hover:bg-[#eafaf1] transition"
+          style={{ boxShadow: "0 1px 4px 0 rgba(44,195,137,0.08)" }}
+        >
+          <svg width="22" height="22" viewBox="0 0 48 48" className="inline-block">
+            <g>
+              <path fill="#4285F4" d="M44.5 20H24v8.5h11.7C34.6 33.2 29.8 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
+              <path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.1 19.2 13 24 13c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 16.5 3 9.8 7.4 6.3 14.7z"/>
+              <path fill="#FBBC05" d="M24 45c5.8 0 10.6-1.9 14.2-5.2l-6.6-5.4C29.6 36.7 26.9 38 24 38c-5.8 0-10.7-3.9-12.5-9.3l-7.1 5.5C9.8 40.6 16.5 45 24 45z"/>
+              <path fill="#EA4335" d="M44.5 20H24v8.5h11.7c-1.3 3.3-4.6 7.5-11.7 7.5-6.6 0-12-5.4-12-12s5.4-12 12-12c2.7 0 5.2.9 7.3 2.5l6.4-6.4C34.1 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 19.5-7.6 21-17.5.1-.7.1-1.3.1-2 0-1.3-.1-2.6-.3-3.8z"/>
+            </g>
+          </svg>
+          Sign in with Google
+        </button>
+        <input
+          type="email"
+          placeholder="Email"
+          value={loginData.email}
+          onChange={e => setLoginData({ ...loginData, email: e.target.value })}
+          className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+          name="email"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={loginData.password}
+          onChange={e => setLoginData({ ...loginData, password: e.target.value })}
+          className="w-full mb-4 p-3 rounded-lg bg-white border border-[#b0bec5] focus:outline-none focus:ring-2 focus:ring-[#56C596] text-[#212121] text-base"
+          name="password"
+        />
+        <button
+          className="w-full mt-2 py-3 rounded-lg bg-[#388E3C] text-white font-semibold text-lg shadow hover:bg-[#2e7031] transition"
+          onClick={loginUser}
+        >
+          Login
+        </button>
+        <div className="mt-5 text-center">
+          <span className="text-[#388E3C] font-medium mr-1">Don't have an account?</span>
+          <button
+            className="text-[#207845] font-semibold underline hover:text-[#388E3C] transition"
+            onClick={goToSignUp}
+            type="button"
+          >
+            Sign Up
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#eafaf1]">
