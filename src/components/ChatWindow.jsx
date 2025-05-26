@@ -32,7 +32,7 @@ const ChatWindow = ({ roomId }) => {
       <div className="h-64 overflow-y-auto mb-4">
         {messages.map((msg, index) => (
           <div key={index} className="mb-2">
-            <span className="font-semibold">{msg.userId}: </span>
+            <span className="font-semibold">{msg.username}: </span>
             {msg.message}
           </div>
         ))}
