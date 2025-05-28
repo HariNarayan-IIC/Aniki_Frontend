@@ -1,13 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import bgImage from "../assets/commbg.jpg"; // Replace with your actual image
 
 const CommunitySection = () => {
+  const navigate = useNavigate();
   const fullText = "Discover Your IT Learning Path";
   const typingSpeed = 70; // Speed in milliseconds
   const [text, setText] = useState(fullText); // Initially set to full text
   const [hasTyped, setHasTyped] = useState(false);
   const [showCursor, setShowCursor] = useState(false); // Track cursor visibility
   const sectionRef = useRef(null);
+
+  // TODO: Replace this with your actual authentication logic
+  // This could be from useAuth hook, context, or props
+  const isLoggedIn = false; // Replace with your actual auth state check
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -42,6 +48,20 @@ const CommunitySection = () => {
     typeEffect();
   };
 
+  // Handle Explore button click
+  const handleExploreClick = () => {
+    navigate("/communities");
+  };
+
+  // Handle Join button click
+  const handleJoinClick = () => {
+    if (isLoggedIn) {
+      navigate("/communities");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -64,10 +84,16 @@ const CommunitySection = () => {
 
         {/* Buttons */}
         <div className="mt-6 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-          <button className="px-6 py-2 bg-white text-black font-semibold rounded-lg shadow-md transition-transform duration-300 hover:bg-gray-200 hover:scale-105">
+          <button 
+            onClick={handleExploreClick}
+            className="px-6 py-2 bg-white text-black font-semibold rounded-lg shadow-md transition-transform duration-300 hover:bg-gray-200 hover:scale-105"
+          >
             Explore
           </button>
-          <button className="px-6 py-2 bg-transparent text-white font-semibold rounded-lg border border-white shadow-md transition-transform duration-300 hover:bg-white hover:text-black hover:scale-105">
+          <button 
+            onClick={handleJoinClick}
+            className="px-6 py-2 bg-transparent text-white font-semibold rounded-lg border border-white shadow-md transition-transform duration-300 hover:bg-white hover:text-black hover:scale-105"
+          >
             Join
           </button>
         </div>
