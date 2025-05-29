@@ -5,7 +5,7 @@ import customIcon from "../assets/box.svg";
 
 const PromotionSection = () => {
   return (
-    <section className="bg-[#f8fae5] min-h-screen flex items-center justify-center">
+    <section className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#a7e39af" }}>
       <div className="max-w-5xl mx-auto px-6 md:flex md:items-center md:justify-between">
         
         {/* Left Content with Fade-in */}
@@ -23,14 +23,14 @@ const PromotionSection = () => {
               className="flex items-start space-x-2"
               whileHover={{ scale: 1.1 }}
             >
-              <img src={customIcon} alt="Custom Icon" className="w-6 h-6" />  
+              
               <p>Guiding beginners to expertise: Structured path for learning key concepts, technologies, and skills.</p>
             </motion.li>
             <motion.li 
               className="flex items-start space-x-2"
               whileHover={{ scale: 1.1 }}
             >
-              <img src={customIcon} alt="Custom Icon" className="w-6 h-6" />  
+              
               <p>Access to curated resources and expert insights.</p>
             </motion.li>
           </ul>
