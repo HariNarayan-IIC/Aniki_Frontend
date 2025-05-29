@@ -8,6 +8,7 @@ import { useAuth } from './context/AuthContext';
 
 function App() {
   const { loading } = useAuth(); 
+  const isChatRoom = location.pathname.startsWith('/chatRoom');
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -29,7 +30,7 @@ function App() {
       <Navbar/>
       <Outlet/>
       <BottomNavigationBar/>
-      <Footer/>
+      {!isChatRoom && <Footer />}
       
     </>
   )

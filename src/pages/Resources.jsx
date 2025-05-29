@@ -48,17 +48,16 @@ const curatedResources = [
 
 export default function ResourcePage() {
   return (
-    <section className="bg-gradient-to-br from-[#101828] via-[#e0f2e9] to-[#f8fae5] min-h-screen py-16 px-4">
+    <section className="bg-[#171e27] min-h-screen py-16 px-4">
+
       <div className="max-w-4xl mx-auto text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-extrabold text-green-600 mb-2">
-          Empower Your IT Learning Journey
+          Resources
         </h1>
-        <h2 className="text-2xl text-gray-900 font-semibold mb-4">
+        <h2 className="text-2xl text-gray-200 font-semibold mb-4">
           Curated Free Resources for Every Learner
         </h2>
-        <p className="text-gray-700 max-w-2xl mx-auto">
-          Aniki is your go-to platform for structured roadmaps and essential study resources in the IT field. Start exploring these handpicked resources to boost your skills and join our vibrant community!
-        </p>
+        
       </div>
 
       {/* Resource Cards */}
@@ -66,16 +65,16 @@ export default function ResourcePage() {
         {curatedResources.map((res, idx) => (
           <div
             key={idx}
-            className="bg-white/80 rounded-2xl shadow-lg p-6 flex flex-col items-start hover:shadow-2xl transition group border border-green-100"
+            className="bg-[#202B38] border border-[#253143] rounded-2xl shadow-lg p-6 flex flex-col items-start hover:shadow-2xl transition group"
           >
             <div className="mb-3">{res.icon}</div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1">{res.title}</h3>
-            <p className="text-gray-700 mb-4 flex-1">{res.description}</p>
+            <h3 className="text-lg font-bold text-gray-100 mb-1">{res.title}</h3>
+            <p className="text-gray-300 mb-4 flex-1">{res.description}</p>
             <a
               href={res.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-auto inline-flex items-center text-green-700 font-semibold hover:underline"
+              className="mt-auto inline-flex items-center text-green-400 font-semibold hover:underline"
             >
               Visit Resource <FaArrowRight className="ml-2" />
             </a>
@@ -83,19 +82,16 @@ export default function ResourcePage() {
         ))}
       </div>
 
-      {/* Coming Soon & Suggest Resource */}
+     
       <div className="max-w-2xl mx-auto text-center mt-16">
-        <div className="bg-green-100 rounded-xl p-6 mb-4">
-          <h4 className="text-green-700 text-lg font-semibold mb-2">🚀 Coming Soon</h4>
-          <p className="text-green-800">
-            Exclusive Aniki-curated resources, notes, and downloadable study guides are on the way!
-          </p>
-        </div>
+        
         <div className="mt-4">
-          <p className="text-gray-700">
+          <p className="text-gray-300">
             Know a great resource?{" "}
             <a
-              href="mailto:team@aniki.com?subject=Resource%20Suggestion"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=theanikiproject@gmail.com&su=Resource%20Suggestion"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-green-700 font-semibold underline"
             >
               Suggest it to us!
