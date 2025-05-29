@@ -103,7 +103,7 @@ export default function RoadmapsCataloguePage() {
               ></div>
             </div>
             <div className="text-xs text-gray-400 text-right">
-              {getProgress(roadmap._id)}% completed
+              {roadmap.progress}% completed
             </div>
           </div>
         )}
@@ -121,6 +121,7 @@ export default function RoadmapsCataloguePage() {
   // "Create your own roadmap" card
   function CreateRoadmapCard() {
     return (
+      
       <Link
         to="/roadmap/create"
         className="flex items-center justify-center bg-[#151e2e] border border-[#232e47] rounded-lg px-4 py-4 min-h-[56px] text-[#32D46C] font-medium hover:bg-[#19263a] transition"
