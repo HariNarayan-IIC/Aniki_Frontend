@@ -18,6 +18,7 @@ import { ReactFlowProvider } from 'reactflow';
 import { SocketProvider } from './context/SocketContext.jsx';
 import ChatRoomsCataloguePage from './pages/CommCataloguePage.jsx';
 import ChatRoomPage from './pages/ChatRoomPage.jsx'
+import ResourcePage from './pages/Resources.jsx'
 
 let router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ let router = createBrowserRouter([
       {
         path: "roadmaps",
         element: <RoadmapsCataloguePage/>
+      },
+      {
+        path :"resources",
+        element: <ResourcePage/>
       },
       {
         path: "roadmap/:id",
