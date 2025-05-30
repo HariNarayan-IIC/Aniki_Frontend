@@ -4,8 +4,10 @@ import { CreateRoadmapCard } from '../components/CreateRoadmapCard';
 import { UserManagementCard } from '../components/UserManagementCard';
 import { ChatroomManagementCard } from '../components/ChatroomManagementCard';
 import { AnalyticsCard } from '../components/AnalyticsCard';
+import { useNavigate } from 'react-router-dom';
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([
     { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user', status: 'active', joinDate: '2024-01-15' },
     { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'admin', status: 'active', joinDate: '2024-02-01' },
@@ -21,7 +23,7 @@ const AdminPanel = () => {
   ]);
 
   const handleCreateRoadmap = () => {
-    console.log('Creating new roadmap...');
+    navigate("/roadmapCreater")
   };
 
   const handleRoleToggle = (userId) => {
