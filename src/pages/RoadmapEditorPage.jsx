@@ -1,424 +1,393 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import ReactFlow, {
+
+import React, { useCallback, useState, useRef, useEffect  } from 'react';
+import {
+  ReactFlow,
   addEdge,
-  Background,
-  Controls,
   MiniMap,
-  useEdgesState,
+  Controls,
+  Background,
   useNodesState,
+  useEdgesState,
+  BackgroundVariant,
+  Panel,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import {authFetch} from '../utils/authFetch.js'
+import { Save } from 'lucide-react';
 
-const initialNodes = [];
-const initialEdges = [];
+import RoadmapNode from '../components/RoadmapNode';
+import PropertyPanel from '../components/PropertyPanel';
+import EditorToolbar from '../components/EditorToolbar';
+import AlignmentTools from '../components/AlignmentTools';
+import EdgePropertyPanel from '../components/EdgePropertyPanel';
+import { useToast } from '../hooks/use-toast';
+import { authFetch } from '../utils/authFetch'
 
-function AdminRoadmapEditor() {
-  const [selectedEdges, setSelectedEdges] = useState([]);
-  const [selectedNodeId, setSelectedNodeId] = useState(null);
+const nodeTypes = {
+  roadmap: RoadmapNode,
+};
+
+const initialNodes = [
+  {
+    id: '1',
+    type: 'roadmap',
+    position: { x: 250, y: 50 },
+    data: {
+      label: 'Getting Started',
+      description: 'Begin your journey here',
+      resources: [],
+      style: {
+        backgroundColor: '#3b82f6',
+        textColor: '#ffffff',
+        borderColor: '#1d4ed8',
+        borderWidth: 2,
+        borderRadius: 8,
+        width: 200,
+        height: 100,
+      },
+    },
+  },
+  {
+    id: '2',
+    type: 'roadmap',
+    position: { x: 250, y: 200 },
+    data: {
+      label: 'Learn Basics',
+      description: 'Master the fundamentals',
+      resources: [],
+      style: {
+        backgroundColor: '#10b981',
+        textColor: '#ffffff',
+        borderColor: '#047857',
+        borderWidth: 2,
+        borderRadius: 8,
+        width: 200,
+        height: 100,
+      },
+    },
+  },
+];
+
+const initialEdges = [
+  {
+    id: 'e1-2',
+    source: '1',
+    target: '2',
+    type: 'smoothstep',
+    animated: true,
+    style: { stroke: '#64748b', strokeWidth: 2 },
+  },
+];
+
+const RoadmapEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedEdge, setSelectedEdge] = useState(null);
+  const [isPropertyPanelOpen, setIsPropertyPanelOpen] = useState(false);
+  const [isEdgePropertyPanelOpen, setIsEdgePropertyPanelOpen] = useState(false);
+  const [roadmapTitle, setRoadmapTitle] = useState(localStorage.getItem('currentRoadmapTitle') || 'My Roadmap');
+  const [roadmapDescription, setRoadmapDescription] = useState(localStorage.getItem('currentRoadmapDescription') || 'A new roadmap');
+  const reactFlowWrapper = useRef(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const { toast } = useToast();
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  
 
-  const addNode = () => {
-    const id = crypto.randomUUID(); // or use Date.now().toString() as a fallback
+  const onConnect = useCallback(
+    (params) => {
+      const newEdge = {
+        ...params,
+        type: 'smoothstep',
+        animated: true,
+        style: { stroke: '#64748b', strokeWidth: 2 },
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
+    },
+    [setEdges]
+  );
+
+  const onNodeClick = useCallback((event, node) => {
+    setSelectedNode(node);
+    setSelectedEdge(null);
+    setIsPropertyPanelOpen(true);
+    setIsEdgePropertyPanelOpen(false);
+  }, []);
+
+  const onEdgeClick = useCallback((event, edge) => {
+    setSelectedEdge(edge);
+    setSelectedNode(null);
+    setIsPropertyPanelOpen(false);
+    setIsEdgePropertyPanelOpen(true);
+  }, []);
+
+  const onPaneClick = useCallback(() => {
+    setSelectedNode(null);
+    setSelectedEdge(null);
+    setIsPropertyPanelOpen(false);
+    setIsEdgePropertyPanelOpen(false);
+  }, []);
+
+  const updateNodeData = useCallback((nodeId, newData) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              ...newData,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }, [setNodes]);
+
+  const updateEdgeData = useCallback((edgeId, newEdgeData) => {
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.id === edgeId) {
+          return {
+            ...edge,
+            ...newEdgeData,
+          };
+        }
+        return edge;
+      })
+    );
+  }, [setEdges]);
+
+  const addNode = useCallback((type, style) => {
+    if (!reactFlowInstance) return;
+
+    const newNodeId = `node_${Date.now()}`;
+    const position = reactFlowInstance.screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+
     const newNode = {
-      id,
-      data: { label: 'New Topic' },
-      position: { x: 100, y: 100 },
-      style: {
-        border: '2px solid black',
-        padding: 10,
-        borderRadius: 8,
-        background: '#fff',
+      id: newNodeId,
+      type: 'roadmap',
+      position,
+      data: {
+        title: 'New Node',
+        description: 'Add your description here',
+        resources: [],
+        style,
       },
-      description: "",
-      resources: []
     };
-    setNodes((nds) => [...nds, newNode]);
-  };
 
-  const saveRoadmap = async () => {
+    setNodes((nds) => nds.concat(newNode));
+  }, [reactFlowInstance, setNodes]);
+
+  const deleteSelected = useCallback(() => {
+    const selectedNodes = nodes.filter(node => node.selected);
+    const selectedEdges = edges.filter(edge => edge.selected);
+    
+    if (selectedNodes.length > 0 || selectedEdges.length > 0) {
+      const newNodes = nodes.filter(node => !node.selected);
+      const newEdges = edges.filter(edge => !edge.selected && 
+        !selectedNodes.some(node => edge.source === node.id || edge.target === node.id)
+      );
+      
+      setNodes(newNodes);
+      setEdges(newEdges);
+      setSelectedNode(null);
+      setSelectedEdge(null);
+      setIsPropertyPanelOpen(false);
+      setIsEdgePropertyPanelOpen(false);
+    }
+  });
+
+  // Keyboard shortcutsAdd commentMore actions
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        undo();
+      } else if (event.key === 'Delete') {
+        event.preventDefault();
+        deleteSelected();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [nodes, edges]);
+
+  const alignNodes = useCallback((alignment) => {
+    const selectedNodes = nodes.filter(node => node.selected);
+    if (selectedNodes.length < 2) return;
+
+    let alignValue;
+    
+    switch (alignment) {
+      case 'left':
+        alignValue = Math.min(...selectedNodes.map(node => node.position.x));
+        setNodes((nds) => nds.map((node) => 
+          node.selected ? { ...node, position: { ...node.position, x: alignValue } } : node
+        ));
+        break;
+      case 'right':
+        alignValue = Math.max(...selectedNodes.map(node => node.position.x + (node.data.style?.width || 200)));
+        setNodes((nds) => nds.map((node) => 
+          node.selected ? { ...node, position: { ...node.position, x: alignValue - (node.data.style?.width || 200) } } : node
+        ));
+        break;
+      case 'center':
+        const centerX = selectedNodes.reduce((sum, node) => sum + node.position.x + (node.data.style?.width || 200) / 2, 0) / selectedNodes.length;
+        setNodes((nds) => nds.map((node) => 
+          node.selected ? { ...node, position: { ...node.position, x: centerX - (node.data.style?.width || 200) / 2 } } : node
+        ));
+        break;
+      case 'top':
+        alignValue = Math.min(...selectedNodes.map(node => node.position.y));
+        setNodes((nds) => nds.map((node) => 
+          node.selected ? { ...node, position: { ...node.position, y: alignValue } } : node
+        ));
+        break;
+      case 'bottom':
+        alignValue = Math.max(...selectedNodes.map(node => node.position.y + (node.data.style?.height || 100)));
+        setNodes((nds) => nds.map((node) => 
+          node.selected ? { ...node, position: { ...node.position, y: alignValue - (node.data.style?.height || 100) } } : node
+        ));
+        break;
+      case 'middle':
+        const centerY = selectedNodes.reduce((sum, node) => sum + node.position.y + (node.data.style?.height || 100) / 2, 0) / selectedNodes.length;
+        setNodes((nds) => nds.map((node) => 
+          node.selected ? { ...node, position: { ...node.position, y: centerY - (node.data.style?.height || 100) / 2 } } : node
+        ));
+        break;
+    }
+  }, [nodes, setNodes]);
+
+  const saveRoadmap = useCallback(async () => {
     try {
+      // This assumes authFetch is available globally or you'll need to import it
       const response = await authFetch('/api/v1/roadmap', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: title,
-          description,
+          name: roadmapTitle,
+          description: roadmapDescription,
           nodes,
           edges,
         }),
       });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create roadmap');
-      }
-  
-      console.log('Saved nodes:', nodes);
-      console.log('Saved edges:', edges);
-      alert('Roadmap saved!');
-    } catch (err) {
-      console.error(err);
-      alert('Failed to save roadmap.');
-    }
-  };
-  
-  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
-  
-  const handleSelectionChange = useCallback(({ nodes, edges }) => {
-    setSelectedNodeId(nodes.length === 1 ? nodes[0].id : null);
-    setSelectedEdges(edges);
-  }, []);
-  
-  const updateNodeLabel = (label) => {
-    setNodes((nds) =>
-      nds.map((node) =>
-        node.id === selectedNodeId ? { ...node, data: { ...node.data, label } } : node
-      )
-    );
-  };
-  
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.key === 'Delete') && selectedNodeId) {
-        setNodes((nds) => nds.filter((node) => node.id !== selectedNodeId));
-        setSelectedNodeId(null);
-      }
-      if ((e.key === 'Delete') && selectedEdges.length > 0) {
-        setEdges((eds) => eds.filter((edge) => !selectedEdges.some((se) => se.id === edge.id)));
-      }
-    };
-  
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedNodeId, selectedEdges, setNodes, setEdges]);
 
+      if (response.ok) {
+        toast({
+          title: "Roadmap Saved!",
+          description: `"${roadmapTitle}" has been saved successfully.`,
+        });
+      } else {
+        throw new Error('Failed to save roadmap');
+      }
+    } catch (error) {
+      console.error('Error saving roadmap:', error);
+      toast({
+        title: "Save Failed",
+        description: "There was an error saving your roadmap. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }, [nodes, edges, roadmapTitle, roadmapDescription, toast]);
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-2">Admin Roadmap Editor</h2>
-      <input
-        type="text"
-        placeholder="Roadmap Title"
-        className="border p-2 mb-2 w-full"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <textarea
-        placeholder="Description"
-        className="border p-2 mb-2 w-full"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-
-      <div className="flex gap-2 mb-2">
-        <button onClick={addNode} className="bg-blue-500 text-white px-4 py-1 rounded">
-          Add Node
-        </button>
-        <button onClick={saveRoadmap} className="bg-green-600 text-white px-4 py-1 rounded">
-          Save Roadmap
-        </button>
-      </div>
-
-      {selectedNode && (
-  <div className="mb-2">
-    <label className="block text-sm font-medium">
-      Edit Label for Node {selectedNode.id}:
-    </label>
-    <input
-      type="text"
-      className="border p-1 w-full"
-      value={selectedNode.data.label}
-      onChange={(e) => updateNodeLabel(e.target.value)}
-    />
-  </div>
-)}
-
-      <div style={{ height: 500 }} className="border rounded">
+    <div className="h-screen flex bg-gray-50">
+      <div className="flex-1 relative">
         <ReactFlow
+          ref={reactFlowWrapper}
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onSelectionChange={handleSelectionChange}
+          onNodeClick={onNodeClick}
+          onEdgeClick={onEdgeClick}
+          onPaneClick={onPaneClick}
+          onInit={setReactFlowInstance}
+          nodeTypes={nodeTypes}
           fitView
+          className="bg-gray-900"
         >
-          <MiniMap />
-          <Controls />
-          <Background />
+          <Background variant={BackgroundVariant.Dots} gap={20} size={1} className="bg-gray-900" />Add commentMore actions
+          <Controls className="bg-gray-800 border-gray-700" />
+          <MiniMap 
+            nodeColor={(node) => node.data.style?.backgroundColor || '#3b82f6'}
+            className="bg-gray-800 border border-gray-700 rounded-lg"
+          />
+          
+          <Panel position="top-left" className="space-y-8">
+            <div className="flex items-center space-x-2">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-2 shadow-lg">
+                <input
+                  type="text"
+                  value={roadmapTitle}
+                  onChange={(e) => {
+                    setRoadmapTitle(e.target.value);
+                    localStorage.setItem('currentRoadmapTitle', e.target.value);
+                  }}
+                  className="px-2 py-1 border border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48  bg-gray-700 text-white"
+                  placeholder="Roadmap title"
+                />
+              </div>
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-2 shadow-lg">
+                <button
+                  onClick={saveRoadmap}
+                  className="flex items-center px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm"
+                >
+                  <Save size={16} className="mr-1" />
+                  Save
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <EditorToolbar onAddNode={addNode} />
+              <AlignmentTools onAlign={alignNodes} selectedCount={nodes.filter(n => n.selected).length} />
+            </div>
+          </Panel>
+          
+
+            
+
+          
+          <Panel position="top-right">
+            {selectedNode && (
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-2 shadow-lg">
+                <button
+                  onClick={deleteSelected}
+                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm"
+                >
+                  Delete Node
+                </button>
+              </div>
+            )}
+          </Panel>
         </ReactFlow>
       </div>
+      
+      {isPropertyPanelOpen && selectedNode && (
+        <PropertyPanel
+          node={selectedNode}
+          onUpdateNode={updateNodeData}
+          onClose={() => setIsPropertyPanelOpen(false)}
+        />
+      )}
+      
+      {isEdgePropertyPanelOpen && selectedEdge && (
+        <EdgePropertyPanel
+          edge={selectedEdge}
+          onUpdateEdge={updateEdgeData}
+          onClose={() => setIsEdgePropertyPanelOpen(false)}
+        />
+      )}
     </div>
   );
-}
+};
 
-export default AdminRoadmapEditor;
-
-// import { useState, useCallback, useRef } from 'react';
-// import ReactFlow, {
-//   addEdge,
-//   Background,
-//   Controls,
-//   MiniMap,
-//   Panel,
-//   useNodesState,
-//   useEdgesState,
-//   MarkerType
-// } from 'reactflow';
-// import 'reactflow/dist/style.css';
-
-// // Custom Node Component
-// const RoadmapNode = ({ data, isConnectable }) => {
-//   return (
-//     <div className="p-3 rounded-md shadow-md bg-white border-2 border-gray-300 w-48">
-//       <div className="text-center font-bold mb-2">{data.label}</div>
-//       <div className="flex justify-center space-x-2">
-//         <button
-//           className="px-2 py-1 bg-blue-500 text-white rounded-md text-xs"
-//           onClick={data.onEdit}
-//         >
-//           Edit
-//         </button>
-//         <button
-//           className="px-2 py-1 bg-red-500 text-white rounded-md text-xs"
-//           onClick={data.onDelete}
-//         >
-//           Delete
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// // Define the node types
-// const nodeTypes = {
-//   roadmapNode: RoadmapNode,
-// };
-
-// // Initialize nodes and edges
-// const initialNodes = [
-//   {
-//     id: '1',
-//     type: 'roadmapNode',
-//     position: { x: 250, y: 100 },
-//     data: { label: 'Research Phase' },
-//   },
-//   {
-//     id: '2',
-//     type: 'roadmapNode',
-//     position: { x: 250, y: 250 },
-//     data: { label: 'Development' },
-//   },
-// ];
-
-// const initialEdges = [
-//   {
-//     id: 'e1-2',
-//     source: '1',
-//     target: '2',
-//     animated: true,
-//     markerEnd: {
-//       type: MarkerType.ArrowClosed,
-//     },
-//   },
-// ];
-
-// const RoadmapEditor = () => {
-//   const reactFlowWrapper = useRef(null);
-//   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-//   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-//   const [nodeName, setNodeName] = useState('');
-//   const [editingNode, setEditingNode] = useState(null);
-//   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  
-//   // Connect two nodes with an edge
-//   const onConnect = useCallback(
-//     (params) => {
-//       const newEdge = {
-//         ...params,
-//         animated: true,
-//         markerEnd: {
-//           type: MarkerType.ArrowClosed,
-//         },
-//       };
-//       setEdges((eds) => addEdge(newEdge, eds));
-//     },
-//     [setEdges]
-//   );
-
-//   // Add a new node
-//   const addNode = () => {
-//     if (!nodeName) return;
-    
-//     const newNode = {
-//       id: `${nodes.length + 1}`,
-//       type: 'roadmapNode',
-//       position: {
-//         x: Math.random() * 300 + 100,
-//         y: Math.random() * 300 + 100,
-//       },
-//       data: {
-//         label: nodeName,
-//         onEdit: () => startEditingNode(`${nodes.length + 1}`),
-//         onDelete: () => deleteNode(`${nodes.length + 1}`),
-//       },
-//     };
-    
-//     setNodes((nds) => [...nds, newNode]);
-//     setNodeName('');
-//   };
-
-//   // Start editing a node's title
-//   const startEditingNode = (nodeId) => {
-//     const node = nodes.find((n) => n.id === nodeId);
-//     if (node) {
-//       setEditingNode(nodeId);
-//       setNodeName(node.data.label);
-//     }
-//   };
-
-//   // Save edited node title
-//   const saveNodeEdit = () => {
-//     if (!editingNode || !nodeName) return;
-    
-//     setNodes((nds) =>
-//       nds.map((node) => {
-//         if (node.id === editingNode) {
-//           return {
-//             ...node,
-//             data: {
-//               ...node.data,
-//               label: nodeName,
-//             },
-//           };
-//         }
-//         return node;
-//       })
-//     );
-    
-//     setEditingNode(null);
-//     setNodeName('');
-//   };
-
-//   // Delete a node
-//   const deleteNode = (nodeId) => {
-//     setNodes((nds) => nds.filter((node) => node.id !== nodeId));
-//     setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-
-//     // If deleting the node being edited, clear editing state
-//     if (editingNode === nodeId) {
-//       setEditingNode(null);
-//       setNodeName('');
-//     }
-//   };
-
-//   // Update all nodes with their onEdit and onDelete handlers
-//   const updateNodeHandlers = useCallback(() => {
-//     setNodes((nds) =>
-//       nds.map((node) => {
-//         return {
-//           ...node,
-//           data: {
-//             ...node.data,
-//             onEdit: () => startEditingNode(node.id),
-//             onDelete: () => deleteNode(node.id),
-//           },
-//         };
-//       })
-//     );
-//   }, []);
-
-//   // When the component mounts, update all node handlers
-//   useState(() => {
-//     updateNodeHandlers();
-//   }, []);
-
-//   const onDragOver = useCallback((event) => {
-//     event.preventDefault();
-//     event.dataTransfer.dropEffect = 'move';
-//   }, []);
-
-//   return (
-//     <div className="w-full h-screen" ref={reactFlowWrapper}>
-//       <ReactFlow
-//         nodes={nodes}
-//         edges={edges}
-//         onNodesChange={onNodesChange}
-//         onEdgesChange={onEdgesChange}
-//         onConnect={onConnect}
-//         nodeTypes={nodeTypes}
-//         onInit={setReactFlowInstance}
-//         fitView
-//         onDragOver={onDragOver}
-//       >
-//         <Controls />
-//         <MiniMap nodeColor="#aaa" zoomable pannable />
-//         <Background variant="dots" gap={12} size={1} />
-        
-//         <Panel position="top-left" className="bg-white p-4 rounded-md shadow-md">
-//           <div className="mb-4 font-bold text-lg text-center">Roadmap Editor</div>
-//           <div className="flex flex-col space-y-2">
-//             <input
-//               type="text"
-//               value={nodeName}
-//               onChange={(e) => setNodeName(e.target.value)}
-//               placeholder="Enter milestone name"
-//               className="border p-2 rounded-md"
-//             />
-//             {editingNode ? (
-//               <div className="flex space-x-2">
-//                 <button
-//                   onClick={saveNodeEdit}
-//                   className="bg-green-500 text-white px-4 py-2 rounded-md flex-1"
-//                 >
-//                   Save Edit
-//                 </button>
-//                 <button
-//                   onClick={() => {
-//                     setEditingNode(null);
-//                     setNodeName('');
-//                   }}
-//                   className="bg-gray-500 text-white px-4 py-2 rounded-md flex-1"
-//                 >
-//                   Cancel
-//                 </button>
-//               </div>
-//             ) : (
-//               <button
-//                 onClick={addNode}
-//                 className="bg-blue-500 text-white px-4 py-2 rounded-md"
-//                 disabled={!nodeName}
-//               >
-//                 Add Milestone
-//               </button>
-//             )}
-//           </div>
-//           <div className="mt-4 text-sm text-gray-600">
-//             <p>• Drag nodes to reposition</p>
-//             <p>• Connect nodes by dragging from handle to handle</p>
-//             <p>• Delete edges by selecting and pressing Delete</p>
-//           </div>
-//         </Panel>
-//       </ReactFlow>
-//     </div>
-//   );
-// };
-
-// export default function AdminRoadmapEditor() {
-//   return (
-//     <div className="w-full h-screen">
-//       <RoadmapEditor />
-//     </div>
-//   );
-// }
-
-
+export default RoadmapEditor;
