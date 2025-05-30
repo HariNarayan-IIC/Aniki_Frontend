@@ -67,7 +67,7 @@ let router = createBrowserRouter([
         element: <AdminOnlyRoute><RoadmapCreator/></AdminOnlyRoute>
       },
       {
-        path: "roadmapEditor",
+        path: "roadmapEditor/:id",
         element: <AdminOnlyRoute><ReactFlowProvider><AdminRoadmapEditor/></ReactFlowProvider></AdminOnlyRoute>
       },
       {

@@ -1,11 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
+import { initialNodes, initialEdges } from '../pages/RoadmapEditorPage';
+import { authFetch } from '../utils/authFetch';
+
 
 const RoadmapCreator = ({ onCreateRoadmap }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
+
+  const createRoadmap = async ()=> {
+  try {
+        // This assumes authFetch is available globally or you'll need to import it
+        const response = await authFetch('/api/v1/roadmap', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            description,
+            nodes: initialNodes,
+            edges: initialEdges,
+          }),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          const roadmapId = data._id;
+          navigate(`/roadmapEditor/${roadmapId}`)
+        } else {
+          throw new Error('Failed to save roadmap');
+        }
+      } catch (error) {
+        console.error('Error saving roadmap:', error);
+        alert(`Error creating roadmap: ${error}`)
+      }
+}
 
   const handleCreate = (e) => {
     e.preventDefault();
@@ -77,6 +109,7 @@ const RoadmapCreator = ({ onCreateRoadmap }) => {
             </button>
             <button
               type="submit"
+              onClick={createRoadmap}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               Create Roadmap

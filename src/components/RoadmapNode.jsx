@@ -4,7 +4,7 @@ import { Handle, Position } from 'reactflow';
 const RoadmapNode = memo(({ data, selected }) => {
   const style = data.style || {};
   const shape = style.shape || 'rectangle';
-  
+
   const getNodeStyle = () => {
     const baseStyle = {
       backgroundColor: style.backgroundColor || '#3b82f6',
@@ -38,8 +38,8 @@ const RoadmapNode = memo(({ data, selected }) => {
     if (shape === 'diamond') {
       return {
         transform: 'rotate(-45deg)',
-        width: '70%',
-        height: '70%',
+        width: '100%',
+        height: '100%',
       };
     }
     return {};
@@ -47,36 +47,36 @@ const RoadmapNode = memo(({ data, selected }) => {
 
   return (
     <div
-      className={`relative border-2 transition-all duration-200 ${
-        selected ? 'ring-2 ring-blue-400 ring-offset-2' : ''
-      }`}
+      className={`relative border-2 transition-all duration-200 ${selected ? 'ring-2 ring-blue-400 ring-offset-2' : ''
+        }`}
       style={getNodeStyle()}
     >
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-3 h-3 bg-white border-2 border-gray-300 rounded-full"
-      />
-      
+
       <div className="p-3 h-full flex flex-col justify-center items-center" style={getContentStyle()}>
+        <Handle
+            type="target"
+            position={Position.Top}
+            className="w-3 h-3 bg-white border-2 border-gray-300 rounded-full"
+          />
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            className="w-3 h-3 bg-white border-2 border-gray-300 rounded-full"
+          />
         <h3 className="font-semibold text-sm mb-1 truncate text-center">
-          {data.title}
+          {data.label}
         </h3>
-        <p className="text-xs opacity-90 line-clamp-2 text-center">
+        {/* <p className="text-xs opacity-90 line-clamp-2 text-center">
           {data.description}
-        </p>
-        {data.resources && data.resources.length > 0 && (
+        </p> */}
+        {/* {data.resources && data.resources.length > 0 && (
           <div className="mt-1 text-xs opacity-75 text-center">
             {data.resources.length} resource{data.resources.length > 1 ? 's' : ''}
           </div>
-        )}
+        )} */}
       </div>
-      
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-3 h-3 bg-white border-2 border-gray-300 rounded-full"
-      />
+
+
     </div>
   );
 });

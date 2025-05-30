@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Plus, Trash2, Link } from 'lucide-react';
 
 const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
-  const [title, setTitle] = useState(node.data.title);
+  const [label, setLabel] = useState(node.data.label);
   const [description, setDescription] = useState(node.data.description);
   const [resources, setResources] = useState(node.data.resources || []);
   const [backgroundColor, setBackgroundColor] = useState(node.data.style?.backgroundColor || '#3b82f6');
@@ -13,8 +13,20 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
   const [shape, setShape] = useState(node.data.style?.shape || 'rectangle');
 
   useEffect(() => {
+    setLabel(node.data.label);
+    setDescription(node.data.description);
+    setResources(node.data.resources || []);
+    setBackgroundColor(node.data.style?.backgroundColor || '#3b82f6');
+    setTextColor(node.data.style?.textColor || '#ffffff');
+    setBorderColor(node.data.style?.borderColor || '#1d4ed8');
+    setWidth(node.data.style?.width || 200);
+    setHeight(node.data.style?.height || 100);
+    setShape(node.data.style?.shape || 'rectangle');
+  }, [node.id]);
+
+  useEffect(() => {
     const updatedData = {
-      title,
+      label,
       description,
       resources,
       style: {
@@ -28,20 +40,20 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
       },
     };
     onUpdateNode(node.id, updatedData);
-  }, [title, description, resources, backgroundColor, textColor, borderColor, width, height, shape, node.id, onUpdateNode, node.data.style]);
+  }, [label, description, resources, backgroundColor, textColor, borderColor, width, height, shape, onUpdateNode, node.data.style]);
 
   const addResource = () => {
     const newResource = {
       id: Date.now().toString(),
-      title: 'New Resource',
-      url: '',
-      type: 'link',
+      resourceLabel: 'New Resource',
+      resourceURL: '',
+      resourceType: 'Blog',
     };
     setResources([...resources, newResource]);
   };
 
   const updateResource = (id, field, value) => {
-    setResources(resources.map(resource => 
+    setResources(resources.map(resource =>
       resource.id === id ? { ...resource, [field]: value } : resource
     ));
   };
@@ -84,8 +96,8 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
               </label>
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-600 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white"
                 placeholder="Node title"
               />
@@ -113,11 +125,10 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
               <button
                 key={shapeOption}
                 onClick={() => setShape(shapeOption)}
-                className={`p-2 border rounded text-xs capitalize ${
-                  shape === shapeOption 
-                    ? 'border-blue-500 bg-blue-600 text-white' 
-                    : 'border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
+                className={`p-2 border rounded text-xs capitalize ${shape === shapeOption
+                  ? 'border-blue-500 bg-blue-600 text-white'
+                  : 'border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
               >
                 {shapeOption}
               </button>
@@ -139,12 +150,13 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
           </div>
           <div className="space-y-2">
             {resources.map((resource) => (
-              <div key={resource.id} className="p-2 border border-gray-600 rounded-md bg-gray-700">
-                <div className="flex items-center justify-between mb-2">
+              <div key={resource.id} className="p-2 border border-gray-600 rounded-md bg-gray-700 space-y-2">
+                {/* Title + Remove */}
+                <div className="flex items-center justify-between">
                   <input
                     type="text"
-                    value={resource.title}
-                    onChange={(e) => updateResource(resource.id, 'title', e.target.value)}
+                    value={resource.resourceLabel}
+                    onChange={(e) => updateResource(resource.id, 'resourceLabel', e.target.value)}
                     className="flex-1 text-xs border-none focus:outline-none font-medium bg-transparent text-white"
                     placeholder="Resource title"
                   />
@@ -155,15 +167,33 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
                     <Trash2 size={12} />
                   </button>
                 </div>
+
+                {/* URL */}
                 <div className="flex items-center">
                   <Link size={12} className="text-gray-400 mr-1" />
                   <input
                     type="url"
-                    value={resource.url}
-                    onChange={(e) => updateResource(resource.id, 'url', e.target.value)}
+                    value={resource.resourceURL}
+                    onChange={(e) => updateResource(resource.id, 'resourceURL', e.target.value)}
                     className="flex-1 text-xs border-none focus:outline-none text-gray-300 bg-transparent"
                     placeholder="https://..."
                   />
+                </div>
+
+                {/* Type Dropdown */}
+                <div>
+                  <select
+                    value={resource.resourceType}
+                    onChange={(e) => updateResource(resource.id, 'resourceType', e.target.value)}
+                    className="w-full text-xs text-white bg-gray-800 border border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Blog">Blog</option>
+                    <option value="Article">Article</option>
+                    <option value="Book">Book</option>
+                    <option value="Video">Video</option>
+                    <option value="Paper">Paper</option>
+                    <option value="Course">Course</option>
+                  </select>
                 </div>
               </div>
             ))}
@@ -173,10 +203,11 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
           </div>
         </div>
 
+
         {/* Style */}
         <div>
           <h3 className="text-sm font-medium text-gray-300 mb-3">Style</h3>
-          
+
           {/* Color Presets */}
           <div className="mb-4">
             <label className="block text-xs font-medium text-gray-400 mb-2">

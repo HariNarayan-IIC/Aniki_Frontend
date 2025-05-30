@@ -12,8 +12,8 @@ const EditorToolbar = ({ onAddNode, vertical = false }) => {
         borderColor: '#1d4ed8',
         borderWidth: 2,
         borderRadius: 8,
-        width: 240,
-        height: 120,
+        width: 150,
+        height: 50,
         shape: 'rectange',
       },
     },
@@ -54,8 +54,8 @@ const EditorToolbar = ({ onAddNode, vertical = false }) => {
         borderColor: '#7c3aed',
         borderWidth: 3,
         borderRadius: 12,
-        width: 250,
-        height: 120,
+        width: 200,
+        height: 100,
         shape: 'circle',
       },
     },
@@ -71,7 +71,7 @@ const EditorToolbar = ({ onAddNode, vertical = false }) => {
 
   return (
     <div className={containerClass}>
-      {!vertical && <div className="text-xs font-medium text-gray-100  mr-2">Add Node:</div>}
+      {!vertical && <div className="text-xs font-medium text-gray-100 select-none mr-2">Add Node:</div>}
       <div className={itemsClass}>
         {nodeTemplates.map((template) => {
           const IconComponent = template.icon;
@@ -79,7 +79,7 @@ const EditorToolbar = ({ onAddNode, vertical = false }) => {
             <button
               key={template.name}
               onClick={() => onAddNode('roadmap', template.style)}
-              className={`${'w-full flex items-center p-3 hover:bg-gray-700 rounded transition-colors text-left' }`}
+              className={`${'w-full flex items-center p-3 hover:bg-gray-700 rounded transition-colors text-left select-none' }`}
               title={template.name}
             >
               { (
@@ -90,7 +90,7 @@ const EditorToolbar = ({ onAddNode, vertical = false }) => {
                   >
                     <IconComponent size={16} color={template.style.textColor} />
                   </div>
-                  <span className="text-white text-sm">{template.name}</span>
+                  <span className="text-white select-none text-sm">{template.name}</span>
                 </>
               ) }
             </button>
