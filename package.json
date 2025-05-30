@@ -26,6 +26,7 @@
     "react-router-dom": "^7.4.0",
     "react-typed": "^2.0.12",
     "reactflow": "^11.11.4",
+    "recharts": "^2.15.3",
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.5.2",
     "tailwind-scrollbar-hide": "^2.0.0",
