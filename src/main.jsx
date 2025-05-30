@@ -18,6 +18,7 @@ import { ReactFlowProvider } from 'reactflow';
 import { SocketProvider } from './context/SocketContext.jsx';
 import ChatRoomsCataloguePage from './pages/CommCataloguePage.jsx';
 import ChatRoomPage from './pages/ChatRoomPage.jsx'
+import RoadmapCreator from './components/RoadmapCreater.jsx';
 import ResourcePage from './pages/Resources.jsx'
 
 let router = createBrowserRouter([
@@ -60,6 +61,10 @@ let router = createBrowserRouter([
       {
         path: "adminPanel",
         element: <AdminOnlyRoute><AdminPanel/></AdminOnlyRoute>
+      },
+      {
+        path: "roadmapCreater",
+        element: <AdminOnlyRoute><RoadmapCreator/></AdminOnlyRoute>
       },
       {
         path: "roadmapEditor",

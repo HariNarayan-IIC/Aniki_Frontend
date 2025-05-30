@@ -1,77 +1,63 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import {authFetch} from "../utils/authFetch";
+import { Fetch } from "../utils/fetch";
 
-// Dummy auth/context for demo; replace with your real auth logic
-const useAuth = () => {
-  return {
-    isLoggedIn: false, // Set to true to test logged-in view
-    user: {
-      _id: "user1",
-      followedRoadmaps: [
-        // Example: { roadmapId: "1", progress: 60 }
-      ],
-    },
-  };
-};
-
-// Dummy data for demonstration
-const roleBasedRoadmaps = [
-  { _id: "1", name: "Frontend", description: "Frontend roadmap", isNew: false },
-  { _id: "2", name: "Backend", description: "Backend roadmap", isNew: false },
-  { _id: "3", name: "DevOps", description: "DevOps roadmap", isNew: false },
-  { _id: "4", name: "Full Stack", description: "Full Stack roadmap", isNew: false },
-  { _id: "5", name: "AI Engineer", description: "AI Engineer roadmap", isNew: true },
-  { _id: "6", name: "Data Analyst", description: "Data Analyst roadmap", isNew: false },
-];
-const skillBasedRoadmaps = [
-  { _id: "101", name: "SQL", description: "SQL roadmap" },
-  { _id: "102", name: "Computer Science", description: "CS roadmap" },
-];
-
-// Combine all roadmaps into one array
-const allRoadmaps = [...roleBasedRoadmaps, ...skillBasedRoadmaps];
-
-const followersCountMap = {};
-allRoadmaps.forEach((r, i) => (followersCountMap[r._id] = 100 + i * 3));
 
 export default function RoadmapsCataloguePage() {
-  const { isLoggedIn, user } = useAuth();
+  const { isAuthenticated } = useAuth(false);
+  const [roadmaps, setRoadmaps] = useState([]);
+  const [loading, setLoading] = useState([false]);
   const navigate = useNavigate();
-  const [following, setFollowing] = useState(user.followedRoadmaps || []);
-  const [followers, setFollowers] = useState(followersCountMap);
 
-  // Check if user follows this roadmap
-  const isFollowing = (roadmapId) => following.some((f) => f.roadmapId === roadmapId);
+  useEffect(() => {
+    const fetchRoadmaps = async () => {
+      try {
+        let res;
+        if (isAuthenticated) {
+          res = await authFetch("/api/v1/roadmap");
+        } else {
+          res = await Fetch("/api/v1/roadmap");
+        }
+        
+        const data = await res.json();
+        setRoadmaps(data);
 
-  // Get progress for a roadmap
-  const getProgress = (roadmapId) => {
-    const f = following.find((f) => f.roadmapId === roadmapId);
-    return f ? f.progress : 0;
-  };
+      } catch (err) {
+        console.error("Failed to fetch roadmaps:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoadmaps();
+  }, [isAuthenticated]);
+
 
   // Handle follow button
-  const handleFollow = (roadmapId) => {
-    if (!isLoggedIn) {
+  const handleFollow = async (roadmapId) => {
+    if (!isAuthenticated) {
       navigate("/login");
       return;
     }
-    setFollowing([...following, { roadmapId, progress: 0 }]);
-    setFollowers((prev) => ({
-      ...prev,
-      [roadmapId]: (prev[roadmapId] || 0) + 1,
-    }));
-    navigate(`/roadmap/${roadmapId}`);
+    //Api call to Follow
+    try {
+        res = await Fetch(`/api/v1//followed-roadmaps/${roadmapId}`);
+    } catch (err) {
+        console.error("Failed to fetch roadmaps:", err);
+    }
   };
 
   // Card component
   function RoadmapCard({ roadmap }) {
-    const followed = isFollowing(roadmap._id);
+    const followed = roadmap.isFollowed;
 
     return (
       <div className="relative group bg-[#151e2e] border border-[#232e47] rounded-lg px-4 py-4 flex flex-col justify-between min-h-[56px] transition hover:outline-none hover:border-[#32D46C] hover:border-2">
         <div className="flex items-center gap-2">
           <span className="text-base font-medium text-white">{roadmap.name}</span>
-          {roadmap.isNew && (
+          {false && (
             <span className="flex items-center gap-1 text-xs font-semibold text-[#32D46C]">
               <span className="w-2 h-2 bg-[#32D46C] rounded-full inline-block"></span>
               New
@@ -81,7 +67,7 @@ export default function RoadmapsCataloguePage() {
         {/* Followers and Follow button in the same row */}
         <div className="flex items-center justify-between mt-3 mb-1">
           <span className="text-xs text-gray-400">
-            Followers: <span className="text-[#32D46C] font-semibold">{followers[roadmap._id] || 0}</span>
+            Followers: <span className="text-[#32D46C] font-semibold">{roadmap.followerCount || 0}</span>
           </span>
           {!followed ? (
             <button
@@ -96,7 +82,7 @@ export default function RoadmapsCataloguePage() {
               Follow
             </button>
           ) : (
-            isLoggedIn && (
+            isAuthenticated && (
               <button
                 className="ml-2 px-3 py-1 rounded bg-[#232e47] text-[#32D46C] text-xs font-bold cursor-default"
                 style={{ minWidth: "60px" }}
@@ -108,16 +94,16 @@ export default function RoadmapsCataloguePage() {
           )}
         </div>
         {/* Progress only if logged in and following */}
-        {isLoggedIn && followed && (
+        {isAuthenticated && followed && (
           <div className="mb-1">
             <div className="w-full h-2 bg-[#232e47] rounded-full overflow-hidden mb-1">
               <div
                 className="h-full bg-gradient-to-r from-[#32D46C] to-[#0F9D58] transition-all"
-                style={{ width: `${getProgress(roadmap._id)}%` }}
+                style={{ width: `${roadmap.progress}%` }}
               ></div>
             </div>
             <div className="text-xs text-gray-400 text-right">
-              {getProgress(roadmap._id)}% completed
+              {roadmap.progress}% completed
             </div>
           </div>
         )}
@@ -135,6 +121,7 @@ export default function RoadmapsCataloguePage() {
   // "Create your own roadmap" card
   function CreateRoadmapCard() {
     return (
+      
       <Link
         to="/roadmap/create"
         className="flex items-center justify-center bg-[#151e2e] border border-[#232e47] rounded-lg px-4 py-4 min-h-[56px] text-[#32D46C] font-medium hover:bg-[#19263a] transition"
@@ -161,7 +148,7 @@ export default function RoadmapsCataloguePage() {
 
         {/* All Roadmaps in one grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-          {allRoadmaps.map((roadmap) => (
+          {roadmaps.map(roadmap => (
             <RoadmapCard
               key={roadmap._id}
               roadmap={roadmap}
