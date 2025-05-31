@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { Card, CardContent } from "../components/ui/card2";
 import { Input } from "../components/ui/input";
 import { Button2 } from "../components/ui/button2";
@@ -6,38 +6,81 @@ import { ScrollArea } from "../components/ui/scrollarea";
 import { Textarea } from "../components/ui/textarea";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { SendHorizonal, Reply, Smile } from "lucide-react";
+import { useSocket } from "../context/SocketContext";
+import { useParams } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
+import { Fetch } from "../utils/fetch";
+
+
 
 // Example data -- you will fetch these from backend later
 const communityName = "Developers";
-const username = "evan";
 const chatrooms = ["Frontend", "Backend", "FullStack"];
 
-// Example messages; in production, fetch per chatroom
-const initialMessages = [
-  { name: "Alex", time: "10:30 AM", content: "I’m new here! Can someone point me to beginner CS resources?" },
-  { name: "evan", time: "10:31 AM", content: "Welcome Alex! You’ll love it here." },
-  { name: "Mei", time: "10:32 AM", content: "Check out CS50 from Harvard, it's free on edX and perfect for beginners!" }
-];
 
 export default function ChatRoomPage({ selectedChatroom: initialChatroom }) {
   // selectedChatroom comes from the catalogue page
+  const { roomId } = useParams();
+  const { username } = useAuth();
+  const socket = useSocket();
   const [selectedChatroom, setSelectedChatroom] = useState(initialChatroom || chatrooms[0]);
-  const [messages, setMessages] = useState(initialMessages); // Replace with backend fetch
-  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const bottomRef = useRef(null);
+
+
+  useEffect(() => {
+  const fetchMessages = async () => {
+    try {
+      const res = await Fetch(`/api/v1/chat-rooms/${roomId}`);
+      const data = await res.json();
+      if (res.ok) {
+        // Expecting messages to be inside data.data
+        setMessages(data.data.map((msg) => ({
+          username: msg.username,
+          message: msg.message,
+          time: new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        })));
+      } else {
+        console.error("Failed to fetch messages", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
+  fetchMessages();
+}, [roomId]);
+
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("joinRoom", { roomId });
+
+    socket.on("chatMessage", (data) => {
+      setMessages((prev) => [...prev, data]);
+    });
+
+    return () => {
+      socket.off("chatMessage");
+    };
+  }, [socket, roomId]);
+
+  useEffect(() => {
+  if (bottomRef.current) {
+    bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+}, [messages]);
+
+  
+
 
   // Placeholder for sending a message (to be replaced with backend logic)
   const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages([
-      ...messages,
-      {
-        name: username,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        content: input
-      }
-    ]);
-    setInput("");
-    // TODO: Send message to backend here
+    if (!socket || !message.trim()) return;
+    setMessage("");
+    socket.emit("chatMessage", { roomId, message });
   };
 
   // Handle chatroom switching (simulate fetching messages)
@@ -62,11 +105,10 @@ export default function ChatRoomPage({ selectedChatroom: initialChatroom }) {
                 <div
                   key={room}
                   onClick={() => handleChatroomSelect(room)}
-                  className={`px-2 py-1 rounded cursor-pointer transition ${
-                    room === selectedChatroom
+                  className={`px-2 py-1 rounded cursor-pointer transition ${room === selectedChatroom
                       ? "bg-gray-700 text-white"
                       : "text-gray-400 hover:text-white"
-                  }`}
+                    }`}
                 >
                   # {room}
                 </div>
@@ -84,7 +126,7 @@ export default function ChatRoomPage({ selectedChatroom: initialChatroom }) {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col" ref={bottomRef}>
         <div className="bg-gray-800 px-6 py-3 border-b border-gray-700 text-sm text-gray-300">
           {selectedChatroom} Chatroom &mdash; Discuss any topic related to computer science
         </div>
@@ -95,18 +137,17 @@ export default function ChatRoomPage({ selectedChatroom: initialChatroom }) {
           </div>
 
           {messages.map((msg, index) => {
-            const isOwn = msg.name === username;
+            const isOwn = msg.username === username;
             return (
               <div
                 key={index}
                 className={`mb-8 flex ${isOwn ? "justify-end" : "justify-start"}`}
               >
                 <Card
-                  className={`w-fit max-w-md ${
-                    isOwn
+                  className={`w-fit max-w-md ${isOwn
                       ? "bg-green-500 text-white rounded-br-none"
                       : "bg-gray-700 text-white rounded-bl-none"
-                  }`}
+                    }`}
                   style={{
                     borderTopRightRadius: isOwn ? 0 : undefined,
                     borderTopLeftRadius: !isOwn ? 0 : undefined,
@@ -115,18 +156,18 @@ export default function ChatRoomPage({ selectedChatroom: initialChatroom }) {
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-bold text-sm">
-                        {isOwn ? "You" : msg.name}
+                        {isOwn ? "You" : msg.username}
                       </span>
-                      <span className="text-xs text-gray-200">{msg.time}</span>
+                      {/* <span className="text-xs text-gray-200">{msg.time}</span> */}
                     </div>
-                    <div className="text-sm mb-2">{msg.content}</div>
+                    <div className="text-sm mb-2">{msg.message}</div>
                     <div className="flex gap-2 text-gray-200 text-sm items-center">
-                      <Button2 variant="ghost" size="sm" className="px-1 py-0 text-xs">
+                      {/* <Button2 variant="ghost" size="sm" className="px-1 py-0 text-xs">
                         <Reply className="w-3 h-3 mr-1" /> Reply
                       </Button2>
                       <Button2 variant="ghost" size="sm" className="px-1 py-0 text-xs">
                         <Smile className="w-3 h-3 mr-1" /> Emoji
-                      </Button2>
+                      </Button2> */}
                     </div>
                   </CardContent>
                 </Card>
@@ -140,8 +181,8 @@ export default function ChatRoomPage({ selectedChatroom: initialChatroom }) {
             className="flex-1 resize-none text-white bg-gray-800 border border-gray-600"
             placeholder="Send a message..."
             rows={1}
-            value={input}
-            onChange={e => setInput(e.target.value)}
+            value={message}
+            onChange={e => setMessage(e.target.value)}
             onKeyDown={e => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
