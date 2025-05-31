@@ -1,0 +1,187 @@
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Fetch } from "../utils/fetch";
+
+// Dummy auth/context for demo; replace with your real auth logic
+const useAuth = () => {
+  // Simulate logged-in user with followedRoadmaps and progress
+  // In production, get this from your context or API
+  return {
+    isLoggedIn: true, // Set to false to test logged-out view
+    user: {
+      _id: "user1",
+      followedRoadmaps: [
+        // Example: { roadmapId: "abc", progress: 60 }
+      ],
+    },
+  };
+};
+
+export default function RoadmapsCataloguePage() {
+  const { isLoggedIn, user } = useAuth();
+  const [roadmaps, setRoadmaps] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [following, setFollowing] = useState([]); // [{roadmapId, progress}]
+  const [followers, setFollowers] = useState({}); // {roadmapId: count}
+
+  useEffect(() => {
+    const fetchRoadmaps = async () => {
+      try {
+        const res = await Fetch("/api/v1/roadmap");
+        const data = await res.json();
+        setRoadmaps(data);
+
+        // Fetch followers for each roadmap (simulate or use your API)
+        const followersMap = {};
+        for (const roadmap of data) {
+          // Replace with your API call
+          followersMap[roadmap._id] = roadmap.followersCount || Math.floor(Math.random() * 1000);
+        }
+        setFollowers(followersMap);
+
+        // Set following/progress from user (simulate)
+        if (isLoggedIn) {
+          setFollowing(user.followedRoadmaps || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch roadmaps:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoadmaps();
+  }, [isLoggedIn, user]);
+
+  // Check if user follows this roadmap
+  const isFollowing = (roadmapId) => following.some((f) => f.roadmapId === roadmapId);
+
+  // Get progress for a roadmap
+  const getProgress = (roadmapId) => {
+    const f = following.find((f) => f.roadmapId === roadmapId);
+    return f ? f.progress : 0;
+  };
+
+  // Handle follow button
+  const handleFollow = async (roadmapId) => {
+    // Replace with your API call
+    setFollowing([...following, { roadmapId, progress: 0 }]);
+    setFollowers((prev) => ({
+      ...prev,
+      [roadmapId]: (prev[roadmapId] || 0) + 1,
+    }));
+  };
+
+  // Filter for logged-in users: show only followed roadmaps
+  const visibleRoadmaps = isLoggedIn
+    ? roadmaps.filter((r) => isFollowing(r._id))
+    : roadmaps;
+
+  return (
+    <div className="min-h-screen bg-[#101828] py-10 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Heading */}
+        <h1 className="text-4xl font-extrabold text-[#32D46C] text-center mb-2" style={{ letterSpacing: "1px" }}>
+          Aniki <span className="text-white">Roadmaps</span>
+        </h1>
+        <p className="text-gray-300 text-center mb-10 max-w-2xl mx-auto">
+          Aniki, your older brother, is here to help guide developers in picking up a path and guide their learnings.
+        </p>
+
+        {/* Role-based Roadmaps */}
+        <div className="mb-10">
+          <div className="flex justify-center mb-6">
+            <button className="px-6 py-2 rounded-lg bg-[#1D2736] text-[#32D46C] font-semibold shadow border border-[#263043]">
+              Role-based Roadmaps
+            </button>
+          </div>
+          {loading ? (
+            <div className="text-gray-400 text-center">Loading roadmaps...</div>
+          ) : visibleRoadmaps.length === 0 ? (
+            <div className="text-gray-400 text-center">
+              {isLoggedIn
+                ? "You are not following any roadmaps yet."
+                : "No roadmaps available."}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {visibleRoadmaps.map((roadmap) => (
+                <div
+                  key={roadmap._id}
+                  className="bg-[#1D2736] border border-[#263043] rounded-xl p-5 shadow hover:shadow-lg transition group relative"
+                  style={{ minHeight: "144px" }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-bold text-white">
+                      {roadmap.name}
+                    </h3>
+                    {/* Optionally, show "New" badge */}
+                    {roadmap.isNew && (
+                      <span className="ml-2 px-2 py-0.5 rounded-full bg-[#32D46C] text-xs text-[#101828] font-bold">
+                        New
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">{roadmap.description}</p>
+
+                  {/* Followers and Progress (only if following and logged in) */}
+                  {isLoggedIn && isFollowing(roadmap._id) && (
+                    <div className="mb-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-gray-400 text-xs">
+                          Followers:{" "}
+                          <span className="text-[#32D46C] font-semibold">
+                            {followers[roadmap._id] || 0}
+                          </span>
+                        </span>
+                      </div>
+                      <div className="w-full h-3 bg-[#263043] rounded-full overflow-hidden mb-1">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#32D46C] to-[#0F9D58] transition-all"
+                          style={{ width: `${getProgress(roadmap._id)}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-gray-400 text-right">
+                        {getProgress(roadmap._id)}% completed
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Follow button (only if not following and logged in) */}
+                  {isLoggedIn && !isFollowing(roadmap._id) && (
+                    <button
+                      className="w-full mt-2 py-2 rounded-lg bg-[#32D46C] text-[#101828] font-bold shadow hover:bg-[#28b15c] transition"
+                      onClick={() => handleFollow(roadmap._id)}
+                    >
+                      Follow
+                    </button>
+                  )}
+
+                  {/* Link to roadmap (always) */}
+                  <Link
+                    to={`/roadmap/${roadmap._id}`}
+                    className="absolute inset-0"
+                    aria-label={`View roadmap: ${roadmap.name}`}
+                    tabIndex={-1}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Skill-based Roadmaps (Optional, as in your screenshot) */}
+        {/* Add similar section if you want */}
+      </div>
+      {/* Extra styles for dark mode and line clamp */}
+      <style>{`
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
+    </div>
+  );
+}

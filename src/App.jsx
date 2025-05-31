@@ -8,6 +8,8 @@ import { useAuth } from './context/AuthContext';
 
 function App() {
   const { loading } = useAuth(); 
+  const isChatRoom = location.pathname.startsWith('/chatRoom');
+  const isRoadmapEditor = location.pathname.startsWith('/roadmapEditor');
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -29,7 +31,7 @@ function App() {
       <Navbar/>
       <Outlet/>
       <BottomNavigationBar/>
-      <Footer/>
+      {!isChatRoom && !isRoadmapEditor  && <Footer />}
       
     </>
   )

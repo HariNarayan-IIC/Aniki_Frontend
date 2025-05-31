@@ -39,66 +39,79 @@ export default function LearningResources() {
 
   // Intersection Observer Hook
   const { ref, inView } = useInView({
-    triggerOnce: true, // Ensures animation runs only once
-    threshold: 0.3, // Trigger animation when 30% of the component is visible
+    triggerOnce: true,
+    threshold: 0.3,
   });
 
   return (
-    <div ref={ref} className="bg-[#f8fae5] min-h-screen py-12 px-4 sm:px-6 lg:px-8 overflow-visible">
+    <div
+      ref={ref}
+      className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 overflow-visible"
+      style={{
+        background: "linear-gradient(135deg, #e0f2e9 0%, #f8fae5 100%)",
+      }}
+    >
       <div className="max-w-5xl mx-auto text-center">
         {/* Animated Heading */}
-        <h2 className="text-3xl font-semibold text-gray-900 flex justify-center space-x-2">
+        <h2 className="text-4xl font-extrabold text-gray-900 flex justify-center space-x-2 tracking-tight">
           {words.map((word, index) => (
             <motion.span
               key={index}
-              initial={{ opacity: 0, y: -20 }} // Start hidden, move up
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }} // Animate when inView
-              transition={{ delay: index * 0.2, duration: 0.5 }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+              transition={{ delay: index * 0.18, duration: 0.5 }}
               className="inline-block"
             >
               {word}
             </motion.span>
           ))}
         </h2>
-        <p className="text-gray-600 mt-2">Explore articles to enhance your IT skills.</p>
+        <p className="text-gray-600 mt-3 text-lg">
+          Explore articles to enhance your IT skills.
+        </p>
       </div>
 
-      {/* Article Cards (No Fade-In, Only Hover Effect) */}
-      <div className="mt-8 grid gap-6 max-w-5xl mx-auto overflow-visible relative grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Article Cards */}
+      <div className="mt-12 grid gap-10 max-w-5xl mx-auto overflow-visible relative grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {articles.map((article, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.05 }} // Only hover effect, no fade-in
+            whileHover={{ scale: 1.04 }}
             className="transform transition duration-300 flex-shrink-0 relative w-full"
           >
-            <Card className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col h-[30rem]">
-              <div className="h-56 w-full overflow-hidden">
-                <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+            <Card className="bg-white/60 backdrop-blur-lg rounded-3xl shadow-xl overflow-hidden flex flex-col h-[32rem] border border-white/30 hover:shadow-2xl transition">
+              <div className="h-56 w-full overflow-hidden group">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-full object-cover rounded-t-3xl transition-transform duration-300 group-hover:scale-105"
+                />
               </div>
-              <CardContent className="p-6 flex-grow flex flex-col justify-between">
+              <CardContent className="p-7 flex-grow flex flex-col justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase">{article.category}</p>
-                  <h3 className="text-lg font-semibold text-gray-900 mt-1">{article.title}</h3>
-                  <p className="text-sm text-gray-600 mt-2">{article.description}</p>
+                  <span className="inline-block px-3 py-1 mb-2 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide shadow-sm">
+                    {article.category}
+                  </span>
+                  <h3 className="text-xl font-bold text-gray-900 mt-1">{article.title}</h3>
+                  <p className="text-base text-gray-700 mt-3">{article.description}</p>
                 </div>
-                <div className="flex items-center mt-4 text-sm text-gray-500">
-                  <span className="font-medium">{article.author}</span>
+                <div className="flex items-center mt-6 text-sm text-gray-500">
+                  <span className="font-semibold">{article.author}</span>
                   <span className="mx-2">•</span>
                   <span>{article.date}</span>
                   <span className="mx-2">•</span>
                   <span>{article.readTime}</span>
                 </div>
+                {/* Optional Read More button */}
+                <div className="mt-5">
+                  <Button className="w-full bg-green-600 text-white font-semibold rounded-xl shadow hover:bg-green-700 transition">
+                    Read More
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
         ))}
-      </div>
-
-      {/* View All Button */}
-      <div className="flex justify-center mt-6">
-        <Button className="bg-gray-900 text-white px-6 py-2 rounded-lg transition-transform transform hover:scale-105">
-          View all
-        </Button>
       </div>
     </div>
   );

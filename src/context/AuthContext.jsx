@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [username, setUsername] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
         .then((body) => {
           if (body.success) {
             setIsAuthenticated(true);
+            setUsername(body.data.user.username);
             if (body.data.user.role === "admin") {
               setIsAdmin(true);
             //   navigate("/adminPanel", {replace: true});
@@ -54,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAdmin, loading, setIsAuthenticated, logoutUser }}>
+    <AuthContext.Provider value={{ username, isAuthenticated, isAdmin, loading, setIsAuthenticated, setIsAdmin, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );
