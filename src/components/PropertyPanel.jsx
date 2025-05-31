@@ -193,6 +193,9 @@ const PropertyPanel = ({ node, onUpdateNode, onClose }) => {
                     <option value="Video">Video</option>
                     <option value="Paper">Paper</option>
                     <option value="Course">Course</option>
+                    <option value="Website">Website</option>
+                    <option value="Channel">Channel</option>
+                    <option value="Playlist">Playlist</option>
                   </select>
                 </div>
               </div>

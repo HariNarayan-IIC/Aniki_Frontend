@@ -39,7 +39,6 @@ const RoadmapPage = () => {
       try {
         const res = await Fetch(`/api/v1/roadmap/${id}`);
         const body = await res.json();
-        console.log(body.nodes);
         setNodes(body.nodes);
         setEdges(body.edges);
         // Wait for the nodes to be rendered before fitting view

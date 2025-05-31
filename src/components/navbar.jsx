@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const Navbar = () => {
-  const { isAuthenticated, loading, logoutUser } = useAuth();
+  const { isAuthenticated, isAdmin, loading, logoutUser } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   if (loading) return null;
@@ -19,15 +19,35 @@ const Navbar = () => {
 
           {/* Menu Items */}
           <ul className="hidden md:flex space-x-8 text-lg font-medium text-gray-800">
-            {!isAuthenticated ? (
-              <li>
-                <NavLink to="/" className={({ isActive }) => isActive ? "font-semibold" : ""}>Home</NavLink>
-              </li>
-            ) : (
-              <li>
-                <NavLink to="/dashboard" className={({ isActive }) => isActive ? "font-semibold" : ""}>Dashboard</NavLink>
-              </li>
-            )}
+            <>
+              {!isAuthenticated ? (
+                <li>
+                  <NavLink to="/" className={({ isActive }) => isActive ? "font-semibold" : ""}>
+                    Home
+                  </NavLink>
+                </li>
+              ) : (
+                <>
+                  {!isAdmin && (
+                    <li>
+                      <NavLink to="/dashboard" className={({ isActive }) => isActive ? "font-semibold" : ""}>
+                        Dashboard
+                      </NavLink>
+                    </li>
+                  )
+                  }
+
+                  {isAdmin && (
+                    <li>
+                      <NavLink to="/adminPanel" className={({ isActive }) => isActive ? "font-semibold" : ""}>
+                        Admin Panel
+                      </NavLink>
+                    </li>
+                  )}
+                </>
+              )}
+            </>
+
             <li><NavLink to="/roadmaps">Roadmaps</NavLink></li>
             <li><NavLink to="/communities">Communities</NavLink></li>
             <li><NavLink to="/resources">Resources</NavLink></li>
