@@ -17,7 +17,7 @@ import { Save } from 'lucide-react';
 
 import RoadmapNode from '../components/RoadmapNode';
 import PropertyPanel from '../components/PropertyPanel';
-import EditorToolbar from '../components/EditorToolbar';
+import EditorToolbar from '../components/EditorToolBar';
 import AlignmentTools from '../components/AlignmentTools';
 import EdgePropertyPanel from '../components/EdgePropertyPanel';
 import { useToast } from '../hooks/use-toast';
